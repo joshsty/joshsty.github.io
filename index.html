@@ -13,7 +13,7 @@
   --r:#EF4444;
   --txt:#F0EFFF;--txt2:rgba(240,239,255,.6);--txt3:rgba(240,239,255,.3);
 }
-html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;overflow:hidden}
+html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;overflow:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .app{display:flex;flex-direction:column;height:100vh}
 
 /* TOPBAR */
@@ -60,23 +60,22 @@ html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
 .sbi{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:.5px solid transparent;cursor:grab;user-select:none;transition:all .12s}
 .sbi:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
 .sbi:active{cursor:grabbing;opacity:.6}
-.sbico{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sbico svg{width:12px;height:12px}
+.sbico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sbico svg{width:18px;height:18px}
 .sbname{font-size:11px;font-weight:500;color:var(--txt2)}
 
 /* CANVAS */
 .cwrap{flex:1;overflow:hidden;position:relative;cursor:default;background:var(--canvas);background-image:radial-gradient(circle,rgba(255,255,255,.045) 1px,transparent 1px);background-size:28px 28px}
 .cwrap.pan{cursor:grabbing}
 .cwrap.connecting{cursor:crosshair}
-.cinner{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}
+.cinner{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform;backface-visibility:hidden;-webkit-font-smoothing:subpixel-antialiased}
 .conn-svg{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
 
 /* NODE */
 .nw{position:absolute;user-select:none;z-index:3}
-.node{width:185px;background:var(--card);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 44px 11px 13px;cursor:grab;position:relative;transition:border-color .14s,box-shadow .14s,background .12s}
+.node{width:185px;background:var(--card);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 44px 11px 13px;cursor:default;position:relative;transition:border-color .14s,box-shadow .14s,background .12s;-webkit-font-smoothing:antialiased}
 .node:hover{border-color:var(--p);background:var(--card2);box-shadow:0 0 0 1px var(--p),0 4px 20px rgba(124,92,252,.14)}
 .node.sel{border-color:var(--p);box-shadow:0 0 0 2px rgba(124,92,252,.32);background:var(--card2)}
-.node.done{border-color:var(--g);box-shadow:0 0 0 1px var(--g)}
 .node:active{cursor:grabbing}
 .ntitle{font-size:13px;font-weight:600;color:var(--txt);line-height:1.3;margin-bottom:5px;outline:none}
 .ntitle[contenteditable="true"]{border-bottom:1px dashed rgba(124,92,252,.5);padding-bottom:1px}
@@ -86,7 +85,7 @@ html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
 .tag.human{background:rgba(34,197,94,.15);color:#4ADE80}
 .tag.thresh{background:rgba(124,92,252,.2);color:var(--p2)}
 .dur{font-size:9.5px;color:var(--txt3)}
-.nstatus{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;border:1.5px dashed rgba(124,92,252,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+
 .nstatus:hover{border-color:var(--p);background:var(--pl)}
 .nstatus.ok{border-style:solid;border-color:var(--g);background:rgba(34,197,94,.12)}
 .nstatus.ok:hover{background:rgba(34,197,94,.22)}
@@ -213,8 +212,11 @@ html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
     <span class="zval" id="zval">100%</span>
     <button class="zbtn" onclick="zoom(0.15)">&#43;</button>
   </div>
+  <button class="tbtn" id="btn-undo" onclick="undo()" title="Undo (Ctrl+Z)" style="opacity:.35;font-size:15px;padding:5px 10px">&#8630;</button>
+  <button class="tbtn" id="btn-redo" onclick="redo()" title="Redo (Ctrl+Y)" style="opacity:.35;font-size:15px;padding:5px 10px">&#8631;</button>
   <button class="tbtn" onclick="fitView()">Fit</button>
-  <button class="tbtn" onclick="resetScene()">Reset view</button>
+  <button class="tbtn" onclick="clearCanvas()">Clear canvas</button>
+  <button class="tbtn" onclick="loadExample()">Load example</button>
   <button class="tbtn" id="btn-present" onclick="togglePresent()">Present</button>
   <button class="tbtn go" onclick="showToast('Workflow published — reviewers notified via Slack.')">Publish</button>
 </div>
@@ -226,7 +228,7 @@ html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
 <div class="cwrap" id="cwrap">
   <div class="scene-label after" id="scene-label">With Vertice</div>
   <div class="cinner" id="cinner">
-    <svg class="conn-svg" id="csvg" width="6000" height="3000"></svg>
+    <svg class="conn-svg" id="csvg" width="6000" height="3000" style="shape-rendering:geometricPrecision"></svg>
     <!-- live connection line -->
     <svg style="position:absolute;top:0;left:0;pointer-events:none;overflow:visible;z-index:50" id="liveline" width="6000" height="3000"></svg>
   </div>
@@ -293,8 +295,7 @@ html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
       <div class="trow"><span class="tlbl">SOC 2 check</span><label class="tog"><input type="checkbox" id="tog-soc" onchange="upd('soc2',this.checked)"><span class="tsl"></span></label></div>
       <div class="trow"><span class="tlbl">Shadow AI flag</span><label class="tog"><input type="checkbox" id="tog-shadow" onchange="upd('shadow',this.checked)"><span class="tsl"></span></label></div>
       <div class="isec" style="margin-top:2px">Actions</div>
-      <button class="iaction" id="btn-approve" onclick="toggleApprove()" style="border:.5px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:#4ADE80">Mark as approved</button>
-      <button class="iaction" onclick="deleteSelStep()" style="border:.5px solid rgba(248,113,113,.3);background:rgba(248,113,113,.07);color:#F87171;margin-top:5px">Delete step</button>
+      <button class="iaction" onclick="deleteSelStep()" style="border:.5px solid rgba(248,113,113,.3);background:rgba(248,113,113,.07);color:#F87171">Delete step</button>
     </div>
   </div>
 </div>
@@ -308,28 +309,41 @@ html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
 <script>
 const PILLARS=[
   {label:'Intake & triage',steps:[
-    {id:'intake',  name:'Intake form',       c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M1.5 1.5h9v9h-9zM3.5 5.5h5M3.5 3.5h3',bench:false},
-    {id:'ai',      name:'AI triage',         c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4 6l2 2 3.5-4.5',bench:false},
+    {id:'intake',   name:'Intake form',        c:'#9B7FFF',bg:'rgba(124,92,252,.22)',vb:'0 0 24 24',
+     icon:'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm0 0v6h6M8 13h8M8 17h5',bench:false},
+    {id:'ai',       name:'AI triage',          c:'#9B7FFF',bg:'rgba(124,92,252,.22)',vb:'0 0 24 24',
+     icon:'M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 3.9 2.4-7.4L2 9.4h7.6L12 2z',bench:false},
   ]},
   {label:'Approvals',steps:[
-    {id:'finance', name:'Finance approval',  c:'#4ADE80',bg:'rgba(34,197,94,.2)', icon:'M1.5 3.5h9v7h-9zM4 3.5v-1.5a2 2 0 014 0v1.5M3.5 6.5h5',bench:false},
-    {id:'legal',   name:'Legal review',      c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M2.5 1h7a1 1 0 011 1v9a1 1 0 01-1 1h-7a1 1 0 01-1-1v-9a1 1 0 011-1zM3 4h6M3 6h6M3 8h4',bench:false},
-    {id:'exec',    name:'Exec sign-off',     c:'#FCD34D',bg:'rgba(245,158,11,.2)', icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM6 3.5V6l2 1.5',bench:false},
+    {id:'finance',  name:'Finance approval',   c:'#4ADE80',bg:'rgba(34,197,94,.2)',vb:'0 0 24 24',
+     icon:'M12 2a10 10 0 100 20A10 10 0 0012 2zm0 5v1.5m0 7V17m-3-5.5h5a1.5 1.5 0 010 3H9m1.5-3V8.5a1.5 1.5 0 013 0V11',bench:false},
+    {id:'legal',    name:'Legal review',       c:'#9B7FFF',bg:'rgba(124,92,252,.22)',vb:'0 0 24 24',
+     icon:'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm0 0v6h6M8 12h8M8 16h8M8 20h5',bench:false},
+    {id:'exec',     name:'Exec sign-off',      c:'#FCD34D',bg:'rgba(245,158,11,.2)',vb:'0 0 24 24',
+     icon:'M20 6L9 17l-5-5',bench:false},
   ]},
   {label:'Risk & compliance',steps:[
-    {id:'infosec', name:'Security review',   c:'#F87171',bg:'rgba(239,68,68,.2)',  icon:'M6 1L1 3.5v3c0 2.5 2 4 5 4.5 3-.5 5-2 5-4.5v-3zM4 6l2 2 3-3.5',bench:false},
-    {id:'tprm',    name:'TPRM check',        c:'#F87171',bg:'rgba(239,68,68,.2)',  icon:'M9 2H3a1 1 0 00-1 1v7a1 1 0 001 1h6a1 1 0 001-1V3a1 1 0 00-1-1zM4 5.5h4M4 7.5h2',bench:false},
+    {id:'infosec',  name:'Security review',    c:'#F87171',bg:'rgba(239,68,68,.2)',vb:'0 0 24 24',
+     icon:'M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4zm0 7v4m0 3v1',bench:false},
+    {id:'tprm',     name:'TPRM check',         c:'#F87171',bg:'rgba(239,68,68,.2)',vb:'0 0 24 24',
+     icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',bench:false},
   ]},
   {label:'Vendor & sourcing',steps:[
-    {id:'negotiate',name:'Negotiation',      c:'#4ADE80',bg:'rgba(34,197,94,.2)', icon:'M1.5 9L6 2l4.5 7M3.5 7h5',bench:true},
-    {id:'commercial',name:'Commercial check',c:'#FCD34D',bg:'rgba(245,158,11,.2)', icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4.5 6h3M6 4.5v3',bench:false},
+    {id:'negotiate',name:'Negotiation',        c:'#4ADE80',bg:'rgba(34,197,94,.2)',vb:'0 0 24 24',
+     icon:'M8 12h8M8 8h8M8 16h5M3 6l3-3m0 0l3 3M6 3v18m12-3l3 3m0 0l-3 3m3-3H6',bench:true},
+    {id:'commercial',name:'Commercial check', c:'#FCD34D',bg:'rgba(245,158,11,.2)',vb:'0 0 24 24',
+     icon:'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',bench:false},
   ]},
   {label:'Execution',steps:[
-    {id:'approve', name:'Final approval',    c:'#4ADE80',bg:'rgba(34,197,94,.2)', icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4 6l2 2 3.5-4',bench:false},
-    {id:'po',      name:'PO creation',       c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M2.5 1.5h7l2 2v8a1 1 0 01-1 1h-8a1 1 0 01-1-1v-9a1 1 0 011-1zM4.5 5.5h5M4.5 7.5h3',bench:false},
-    {id:'notify',  name:'Slack notification',c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M1.5 2.5h9a1 1 0 011 1v6a1 1 0 01-1 1H2.5L1 12V3.5a1 1 0 011-1zM3.5 5.5h5M3.5 7.5h3',bench:false},
+    {id:'approve',  name:'Final approval',     c:'#4ADE80',bg:'rgba(34,197,94,.2)',vb:'0 0 24 24',
+     icon:'M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3',bench:false},
+    {id:'po',       name:'PO creation',        c:'#9B7FFF',bg:'rgba(124,92,252,.22)',vb:'0 0 24 24',
+     icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',bench:false},
+    {id:'notify',   name:'Slack notification', c:'#9B7FFF',bg:'rgba(124,92,252,.22)',vb:'0 0 24 24',
+     icon:'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9',bench:false},
   ]},
-];
+]
+
 const TYPES=PILLARS.flatMap(p=>p.steps);
 function TT(id){return TYPES.find(t=>t.id===id)||TYPES[0]}
 
@@ -337,7 +351,7 @@ const NW=185,NH=70;
 let uid=0;
 function mkStep(type,x,y,extra={}){
   const t=TT(type);
-  return {id:'n'+(++uid),type,label:t.name,assignee:'Vertice AI',dur:2,approval:'auto',slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,x,y,...extra};
+  return {id:'n'+(++uid),type,label:t.name,assignee:'Vertice AI',dur:2,approval:'auto',slack:true,escalate:false,infosec:false,soc2:false,shadow:false,x,y,...extra};
 }
 
 /* ── SCENES ── */
@@ -350,12 +364,12 @@ const SCENES={
     cycleNew:'6 weeks',
     cycleSave:'No automation',
     nodes:()=>[
-      mkStep('intake',  60, 200,{label:'Email request sent',    assignee:'Employee',     dur:2, approval:'human',done:false}),
-      mkStep('legal',   330,200,{label:'Spreadsheet tracking',  assignee:'Proc. Lead',   dur:5, approval:'human',done:false}),
-      mkStep('infosec', 600,200,{label:'InfoSec review (late)', assignee:'Head of IT',   dur:14,approval:'human',infosec:true,done:false}),
-      mkStep('legal',   870,200,{label:'Legal review',          assignee:'Legal team',   dur:7, approval:'human',done:false}),
-      mkStep('finance', 1140,200,{label:'Finance approval',     assignee:'CFO',          dur:5, approval:'human',done:false}),
-      mkStep('po',      1410,200,{label:'Manual PO raised',     assignee:'Proc. Lead',   dur:3, approval:'human',done:false}),
+      mkStep('intake',  60, 200,{label:'Email request sent',    assignee:'Employee',     dur:2, approval:'human'}),
+      mkStep('legal',   330,200,{label:'Spreadsheet tracking',  assignee:'Proc. Lead',   dur:5, approval:'human'}),
+      mkStep('infosec', 600,200,{label:'InfoSec review (late)', assignee:'Head of IT',   dur:14,approval:'human',infosec:true}),
+      mkStep('legal',   870,200,{label:'Legal review',          assignee:'Legal team',   dur:7, approval:'human'}),
+      mkStep('finance', 1140,200,{label:'Finance approval',     assignee:'CFO',          dur:5, approval:'human'}),
+      mkStep('po',      1410,200,{label:'Manual PO raised',     assignee:'Proc. Lead',   dur:3, approval:'human'}),
     ],
     conns:(ns)=>[
       {from:ns[0].id,to:ns[1].id},{from:ns[1].id,to:ns[2].id},
@@ -371,17 +385,17 @@ const SCENES={
     cycleNew:'~8 days',
     cycleSave:'81% faster',
     nodes:()=>[
-      mkStep('intake',    50, 200,{label:'Dynamic intake form',    assignee:'Vertice AI',   dur:1,approval:'auto', done:true}),
-      mkStep('ai',        320,200,{label:'AI triage & validation', assignee:'Vertice AI',   dur:1,approval:'auto', done:true}),
-      mkStep('infosec',   590,80, {label:'Security Review',        assignee:'Kevin Smith',  dur:3,approval:'human',infosec:true,soc2:true,done:true}),
-      mkStep('legal',     590,200,{label:'Legal Approval',         assignee:'Marcus Adams', dur:3,approval:'human',done:false}),
-      mkStep('commercial',590,320,{label:'Commercial check',       assignee:'Proc. Lead',   dur:2,approval:'human',done:false}),
-      mkStep('finance',   860,200,{label:'Finance approval',       assignee:'Finance team', dur:2,approval:'threshold',threshold:10000,done:false}),
-      mkStep('exec',      1130,80,{label:'CFO sign-off',           assignee:'CFO',          dur:1,approval:'human',done:false}),
-      mkStep('notify',    1130,320,{label:'Auto-approved',         assignee:'Vertice AI',   dur:1,approval:'auto', done:false}),
-      mkStep('negotiate', 1400,200,{label:'Vendor negotiation',    assignee:'Vertice AI',   dur:5,approval:'auto', done:false}),
-      mkStep('approve',   1670,200,{label:'Final approval',        assignee:'CFO',          dur:1,approval:'human',done:false}),
-      mkStep('po',        1940,200,{label:'PO creation',           assignee:'Vertice AI',   dur:1,approval:'auto', done:false}),
+      mkStep('intake',    50, 200,{label:'Dynamic intake form',    assignee:'Vertice AI',   dur:1,approval:'auto'}),
+      mkStep('ai',        320,200,{label:'AI triage & validation', assignee:'Vertice AI',   dur:1,approval:'auto'}),
+      mkStep('infosec',   590,80, {label:'Security Review',        assignee:'Head of IT',   dur:3,approval:'human',infosec:true,soc2:true}),
+      mkStep('legal',     590,200,{label:'Legal Approval',         assignee:'Legal team',   dur:3,approval:'human'}),
+      mkStep('commercial',590,320,{label:'Commercial check',       assignee:'Proc. Lead',   dur:2,approval:'human'}),
+      mkStep('finance',   860,200,{label:'Finance approval',       assignee:'Finance team', dur:2,approval:'threshold',threshold:10000}),
+      mkStep('exec',      1130,80,{label:'CFO sign-off',           assignee:'CFO',          dur:1,approval:'human'}),
+      mkStep('notify',    1130,320,{label:'Auto-approved',         assignee:'Vertice AI',   dur:1,approval:'auto'}),
+      mkStep('negotiate', 1400,200,{label:'Vendor negotiation',    assignee:'Vertice AI',   dur:5,approval:'auto'}),
+      mkStep('approve',   1670,200,{label:'Final approval',        assignee:'CFO',          dur:1,approval:'human'}),
+      mkStep('po',        1940,200,{label:'PO creation',           assignee:'Vertice AI',   dur:1,approval:'auto'}),
     ],
     conns:(ns)=>[
       {from:ns[0].id,to:ns[1].id},
@@ -411,6 +425,7 @@ function saveCurrentScene(){
 }
 
 function loadScene(name){
+  undoStack=[];redoStack=[];updateUndoUI();
   saveCurrentScene(); // save current before switching
   currentScene=name;
   const s=SCENES[name];
@@ -436,12 +451,38 @@ function loadScene(name){
 /* ── PAN/ZOOM ── */
 let px=40,py=40,scale=1,isPan=false,didPan=false,psx=0,psy=0;
 let dragNodeId=null,dragOx=0,dragOy=0;
+let undoStack=[],redoStack=[];
+function snapshot(){
+  undoStack.push(JSON.stringify({nodes,conns}));
+  if(undoStack.length>50)undoStack.shift();
+  redoStack=[];
+  updateUndoUI();
+}
+function undo(){
+  if(!undoStack.length)return;
+  redoStack.push(JSON.stringify({nodes,conns}));
+  const s=JSON.parse(undoStack.pop());
+  nodes=s.nodes;conns=s.conns;
+  if(sel&&!nodes.find(n=>n.id===sel.id))deselect();
+  render();updateUndoUI();showToast('Undo');
+}
+function redo(){
+  if(!redoStack.length)return;
+  undoStack.push(JSON.stringify({nodes,conns}));
+  const s=JSON.parse(redoStack.pop());
+  nodes=s.nodes;conns=s.conns;
+  render();updateUndoUI();showToast('Redo');
+}
+function updateUndoUI(){
+  document.getElementById('btn-undo').style.opacity=undoStack.length?'1':'.35';
+  document.getElementById('btn-redo').style.opacity=redoStack.length?'1':'.35';
+}
 let connFrom=null,liveX=0,liveY=0,isConnecting=false;
 let sel=null,dragTypeId=null;
 let presentMode=false;
 
 const cwrap=document.getElementById('cwrap'),cinner=document.getElementById('cinner');
-function applyT(){cinner.style.transform=`translate(${px}px,${py}px) scale(${scale})`;document.getElementById('zval').textContent=Math.round(scale*100)+'%';}
+function applyT(){cinner.style.transform=`translate3d(${Math.round(px)}px,${Math.round(py)}px,0) scale(${scale})`;document.getElementById('zval').textContent=Math.round(scale*100)+'%';}
 
 cwrap.addEventListener('mousedown',e=>{
   if(e.target.closest('.node,.sbi,.add-btn,.ndel,.ix,.tog,.iin,.isel,.tin,.iaction,.nport,.ctx-menu'))return;
@@ -478,7 +519,7 @@ window.addEventListener('mouseup',e=>{
     if(nw){
       const toId=nw.getAttribute('data-id');
       if(toId&&toId!==connFrom&&!conns.find(c=>c.from===connFrom&&c.to===toId)){
-        conns.push({from:connFrom,to:toId});
+        snapshot();conns.push({from:connFrom,to:toId});
         render();showToast('Connection added');
       }
     }
@@ -488,6 +529,7 @@ window.addEventListener('mouseup',e=>{
     return;
   }
   if(dragNodeId){
+    snapshot();
     dragNodeId=null;
     render();
   }
@@ -497,7 +539,21 @@ cwrap.addEventListener('wheel',e=>{
   scale=Math.min(2.5,Math.max(.2,scale+d));px=mx-(mx-px)*(scale/ps);py=my-(my-py)*(scale/ps);applyT();
 },{passive:false});
 function zoom(d){scale=Math.min(2.5,Math.max(.2,scale+d));applyT();}
-function fitView(){px=40;py=40;scale=.75;applyT();}
+function fitView(){
+  if(!nodes.length){px=40;py=40;scale=1;applyT();return;}
+  const cw=cwrap.clientWidth,ch=cwrap.clientHeight;
+  const minX=Math.min(...nodes.map(n=>n.x));
+  const minY=Math.min(...nodes.map(n=>n.y));
+  const maxX=Math.max(...nodes.map(n=>n.x+185));
+  const maxY=Math.max(...nodes.map(n=>n.y+90));
+  const pad=60;
+  const scaleX=(cw-pad*2)/(maxX-minX||1);
+  const scaleY=(ch-pad*2)/(maxY-minY||1);
+  scale=Math.min(scaleX,scaleY,.9);
+  px=pad-minX*scale;
+  py=pad-minY*scale;
+  applyT();
+}
 
 /* ── RENDER ── */
 function render(){
@@ -519,11 +575,11 @@ function renderConnsOnly(){
     const color=c.color||'rgba(255,255,255,.18)';
     const p=document.createElementNS(NS,'path');
     p.setAttribute('d',`M${ax} ${ay} C${mx} ${ay} ${mx} ${by} ${bx} ${by}`);
-    p.setAttribute('fill','none');p.setAttribute('stroke',color);p.setAttribute('stroke-width','1.5');
+    p.setAttribute('fill','none');p.setAttribute('stroke',color);p.setAttribute('stroke-width','1.8');
     svg.appendChild(p);
     const arr=document.createElementNS(NS,'path');
     arr.setAttribute('d',`M${bx-8} ${by-4} L${bx} ${by} L${bx-8} ${by+4}`);
-    arr.setAttribute('fill','none');arr.setAttribute('stroke',color);arr.setAttribute('stroke-width','1.5');arr.setAttribute('stroke-linecap','round');arr.setAttribute('stroke-linejoin','round');
+    arr.setAttribute('fill','none');arr.setAttribute('stroke',color);arr.setAttribute('stroke-width','1.8');arr.setAttribute('stroke-linecap','round');arr.setAttribute('stroke-linejoin','round');
     svg.appendChild(arr);
   });
 }
@@ -536,7 +592,7 @@ function drawLiveLine(){
   const p=document.createElementNS(NS,'path');
   const mx=(ax+liveX)/2;
   p.setAttribute('d',`M${ax} ${ay} C${mx} ${ay} ${mx} ${liveY} ${liveX} ${liveY}`);
-  p.setAttribute('fill','none');p.setAttribute('stroke','rgba(124,92,252,.7)');p.setAttribute('stroke-width','1.5');p.setAttribute('stroke-dasharray','6 4');
+  p.setAttribute('fill','none');p.setAttribute('stroke','rgba(124,92,252,.7)');p.setAttribute('stroke-width','1.8');p.setAttribute('stroke-dasharray','6 4');
   svg.appendChild(p);
 }
 
@@ -575,7 +631,7 @@ function placeNode(node){
   wrap.style.cssText=`left:${node.x}px;top:${node.y}px;width:${NW}px`;
 
   const el=document.createElement('div');
-  el.className='node'+(isSel?' sel':'')+(node.done?' done':'');
+  el.className='node'+(isSel?' sel':'');el.style.paddingRight='48px';
 
   // Title — inline editable on dblclick
   const title=document.createElement('div');
@@ -598,13 +654,9 @@ function placeNode(node){
   meta.innerHTML=`<span class="tag ${node.approval==='threshold'?'thresh':node.approval==='auto'?'auto':'human'}">${node.approval==='threshold'?'Threshold':node.approval==='auto'?'AI auto':'Human'}</span><span class="dur">~${node.dur}d · ${node.assignee}</span>`;
 
   const status=document.createElement('div');
-  status.className='nstatus'+(node.done?' ok':'');
-  status.title=node.done?'Click to unapprove':'Click to approve';
-  status.innerHTML=node.done
-    ?'<svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7l3.5 3.5 5.5-6" stroke="#22C55E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    :'<svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="4" stroke="rgba(124,92,252,.45)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>';
-  status.addEventListener('mousedown',e=>e.stopPropagation());
-  status.addEventListener('click',e=>{e.stopPropagation();node.done=!node.done;render();if(sel&&sel.id===node.id)selectNode(node);});
+  status.style.cssText='position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:'+t.bg;
+  status.style.width='26px';status.style.height='26px';status.style.borderRadius='7px';
+  status.innerHTML='<svg width="15" height="15" viewBox="'+(t.vb||'0 0 20 20')+'" fill="none"><path d="'+t.icon+'" stroke="'+t.c+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   el.appendChild(title);el.appendChild(meta);el.appendChild(status);
 
@@ -664,7 +716,6 @@ function showCtx(cx,cy,node){
   const items=[
     {icon:'M11 5H6a2 2 0 00-2 2v11m3-3H7a2 2 0 01-2-2V7m0 0a2 2 0 012-2h2.586a1 1 0 01.707.293l2.414 2.414A1 1 0 0113 9.414V19a2 2 0 01-2 2H7',label:'Duplicate',action:()=>duplicateNode(node)},
     {icon:'M12 4v16m8-8H4',label:'Add parallel step',action:()=>addParallelStep(node)},
-    {icon:node.done?'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z':'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',label:node.done?'Unapprove':'Approve',action:()=>{node.done=!node.done;render();if(sel&&sel.id===node.id)selectNode(node);}},
     {sep:true},
     {icon:'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',label:'Delete',danger:true,action:()=>removeNode(node.id)},
   ];
@@ -716,6 +767,7 @@ function closeQQ(){if(qqEl){qqEl.remove();qqEl=null;}}
 
 /* ── NODE OPS ── */
 function insertOnConn(typeId,ci){
+  snapshot();
   const c=conns[ci];if(!c)return;
   const fn=nodes.find(n=>n.id===c.from),tn=nodes.find(n=>n.id===c.to);
   if(!fn||!tn)return;
@@ -726,11 +778,13 @@ function insertOnConn(typeId,ci){
   render();showToast(`"${TT(typeId).name}" added`);
 }
 function removeNode(id){
+  snapshot();
   nodes=nodes.filter(n=>n.id!==id);
   conns=conns.filter(c=>c.from!==id&&c.to!==id);
   if(sel&&sel.id===id)deselect();else render();showToast('Step removed');
 }
 function addParallelStep(node){
+  snapshot();
   // Find what nodes point TO the same targets as this node (siblings)
   // and what points INTO this node (parents)
   const parents=conns.filter(c=>c.to===node.id).map(c=>c.from);
@@ -745,23 +799,9 @@ function addParallelStep(node){
   render();showToast('Parallel step added — drag to reposition');
 }
 function duplicateNode(node){
-  const copy=Object.assign({},node,{id:'n'+(++uid),x:node.x+24,y:node.y+24,done:false});
+  snapshot();
+  const copy=Object.assign({},node,{id:'n'+(++uid),x:node.x+24,y:node.y+24});
   nodes.push(copy);render();showToast('Step duplicated');
-}
-function toggleApprove(){
-  if(!sel)return;sel.done=!sel.done;
-  const w=cinner.querySelector('.nw[data-id="'+sel.id+'"]');
-  if(w){
-    const nd=w.querySelector('.node');
-    if(nd)nd.className='node sel'+(sel.done?' done':'');
-    const st=w.querySelector('.nstatus');
-    if(st){
-      st.className='nstatus'+(sel.done?' ok':'');
-      st.innerHTML=sel.done?'<svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7l3.5 3.5 5.5-6" stroke="#22C55E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>':'<svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="4" stroke="rgba(124,92,252,.45)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>';
-    }
-  }
-  document.getElementById('btn-approve').textContent=sel.done?'Unapprove step':'Mark as approved';
-  showToast(sel.done?'Step approved':'Step unapproved');
 }
 function deleteSelStep(){if(sel)removeNode(sel.id);}
 
@@ -788,7 +828,6 @@ function selectNode(node){
   document.getElementById('thresh-ui').style.display=node.approval==='threshold'?'block':'none';
   document.getElementById('in-thresh').value=node.threshold||10000;
   document.getElementById('bench-ui').style.display=TT(node.type).bench?'block':'none';
-  document.getElementById('btn-approve').textContent=node.done?'Unapprove step':'Mark as approved';
   // Update visual selection without full re-render (avoids killing pending drag)
   document.querySelectorAll('.node').forEach(n=>n.classList.remove('sel'));
   const selWrap=cinner.querySelector(`.nw[data-id="${node.id}"]`);
@@ -811,6 +850,7 @@ function upd(field,val){
     if(w){const t=w.querySelector('.ntitle');if(t&&t.contentEditable!=='true')t.textContent=val;}
   }
   if(field==='threshold'){
+    snapshot();
     conns.forEach(c=>{
       if(c.from===sel.id&&c.label){
         if(c.label.startsWith('Above'))c.label='Above $'+val.toLocaleString();
@@ -837,6 +877,7 @@ function updApproval(val){
   if(!sel)return;sel.approval=val;
   document.getElementById('thresh-ui').style.display=val==='threshold'?'block':'none';
   if(val==='threshold'&&!conns.find(c=>c.from===sel.id&&c.label)){
+    snapshot();
     const hi=mkStep('exec',sel.x+NW+80,sel.y-140,{label:'CFO sign-off',assignee:'CFO',dur:1,approval:'human'});
     const lo=mkStep('notify',sel.x+NW+80,sel.y+90,{label:'Auto-approved',assignee:'Vertice AI',dur:1,approval:'auto'});
     nodes.push(hi,lo);
@@ -874,7 +915,7 @@ function buildPalette(){
     <div class="sbsec">${p.label}</div>
     ${p.steps.map(t=>`
       <div class="sbi" draggable="true" ondragstart="dragTypeId='${t.id}'" ondragend="dragTypeId=null">
-        <div class="sbico" style="background:${t.bg}"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="${t.icon}" stroke="${t.c}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="sbico" style="background:${t.bg}"><svg width="18" height="18" viewBox="${t.vb}" fill="none"><path d="${t.icon}" stroke="${t.c}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <span class="sbname">${t.name}</span>
       </div>`).join('')}`).join('');
 }
@@ -885,23 +926,33 @@ cwrap.addEventListener('drop',e=>{
   const r=cwrap.getBoundingClientRect();
   const x=(e.clientX-r.left-px)/scale-NW/2;
   const y=(e.clientY-r.top-py)/scale-NH/2;
-  nodes.push(mkStep(dragTypeId,x,y));dragTypeId=null;
+  snapshot();nodes.push(mkStep(dragTypeId,x,y));dragTypeId=null;
   render();showToast('Step added — hover a node to see the connect port (●)');
 });
 cwrap.addEventListener('click',e=>{if(didPan)return;if(e.target===cwrap||e.target===cinner)deselect();});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){deselect();closeCtx();closeQQ();if(presentMode)togglePresent();}
+  if((e.key==='z'||e.key==='Z')&&(e.ctrlKey||e.metaKey)&&!e.shiftKey&&!e.target.closest('input,select,[contenteditable]')){e.preventDefault();undo();}
+  if(((e.key==='y'||e.key==='Y')&&(e.ctrlKey||e.metaKey)||((e.key==='z'||e.key==='Z')&&(e.ctrlKey||e.metaKey)&&e.shiftKey))&&!e.target.closest('input,select,[contenteditable]')){e.preventDefault();redo();}
   if((e.key==='Delete'||e.key==='Backspace')&&sel&&!e.target.closest('input,select,[contenteditable]'))deleteSelStep();
   if(e.key==='f'||e.key==='F')fitView();
 });
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
 
-function resetScene(){
-  if(!confirm('Reset this view to its default state?'))return;
+function clearCanvas(){
+  if(nodes.length&&!confirm('Clear all nodes from the canvas?'))return;
+  snapshot();
+  nodes=[];conns=[];sel=null;
+  document.getElementById('ie').style.display='block';
+  document.getElementById('ip').style.display='none';
+  render();showToast('Canvas cleared');
+}
+function loadExample(){
+  if(nodes.length&&!confirm('Load the example workflow? This will replace the current canvas.'))return;
   delete sessionCache[currentScene];
   const name=currentScene;currentScene=null;
-  loadScene(name);showToast('View reset to default');
+  loadScene(name);showToast('Example workflow loaded');
 }
 
 function onAsgnChange(val){
@@ -925,7 +976,12 @@ function updDur(){
   renderCycleBar();
 }
 buildPalette();
-loadScene('after');
+// Wait until cwrap has real dimensions before first render
+function initLoad(){
+  if(cwrap.clientWidth===0){setTimeout(initLoad,16);return;}
+  loadScene('after');
+}
+initLoad();
 </script>
 </body>
 </html>
