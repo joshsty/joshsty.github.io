@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vertice — Workflow Builder</title>
+<title>Joshua Stylianou</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHBhdGggZD0iTTE4LjQgMS4xQzE3LjggMC44NyAxNy4xIDAuODMgMTYuNSAxLjA0QzE2LjIgMS4xNCAxNS44IDEuMyAxNS41IDEuNTZMNi41IDkuMUM3LjcgMTAuNiA5LjUgMTEuNCAxMS40IDExLjRMNy4xIDIyLjFDNS40IDE3LjMgMy4zIDExLjEgMy4zIDExLjFMMi4yIDEyQzAuMyAxMy41LTAuNSAxNiAwLjMgMTguM0w0LjUgMzAuNEM0LjcgMzEuMSA1LjMgMzEuNiA2IDMxLjlDNy4zIDMyLjQgOC44IDMxLjcgOS4zIDMwLjRMMjAuMSAzLjVDMjAuNiAyLjIgMTkuOSAwLjcgMTguNCAxLjFaIiBmaWxsPSJ1cmwoI2cpIi8+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzdDNUNGQyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0QjNCQzQiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgo8L3N2Zz4=">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -1007,7 +1008,7 @@ async function checkGate(){
   const v=document.getElementById('gate-input').value;
   const h=await _sha(v);
   if(h===_h){
-    document.getElementById('gate').style.display='none';
+    document.getElementById('gate').style.display='none';document.title='Vertice — Workflow Builder';
   }else{
     const el=document.getElementById('gate-input');
     el.classList.add('err');el.value='';
