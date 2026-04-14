@@ -184,9 +184,29 @@ html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
 .drag-handle svg{pointer-events:none;display:block}
 .nw::after{content:'';position:absolute;left:0;right:0;bottom:-16px;height:18px}
 .nw:hover .drag-handle{display:flex}
+
+/* PASSWORD GATE */
+.gate{position:fixed;inset:0;background:#0E0E1A;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:20px}
+.gate-logo{margin-bottom:8px}
+.gate-title{font-size:15px;color:rgba(240,239,255,.5);letter-spacing:.08em}
+.gate-input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:11px 18px;font-size:14px;color:#F0EFFF;outline:none;width:240px;text-align:center;letter-spacing:.1em;transition:border-color .2s}
+.gate-input:focus{border-color:rgba(124,92,252,.7)}
+.gate-input.err{border-color:rgba(239,68,68,.7);animation:shake .3s}
+.gate-btn{background:#7C5CFC;border:none;border-radius:10px;padding:11px 32px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+.gate-btn:hover{background:#6B4EFF}
+.gate-hint{font-size:11px;color:rgba(240,239,255,.25)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 </style>
 </head>
 <body>
+
+<div class="gate" id="gate">
+  <div class="gate-title">JOSHUA STYLIANOU</div>
+  <input class="gate-input" id="gate-input" type="password" placeholder="Enter password" autocomplete="off" autofocus>
+  <button class="gate-btn" onclick="checkGate()">Enter</button>
+  <div class="gate-hint">Press Enter to continue</div>
+</div>
+
 <div class="app">
 <div class="topbar" id="topbar">
   <svg height="22" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -975,6 +995,29 @@ function updDur(){
   }
   renderCycleBar();
 }
+
+// ── PASSWORD GATE ──
+const _h='11663c4ad9cbcb9d563a1547061707ceca9c5332ccfad34e58016435997e0a6e';
+async function _sha(s){
+  const b=new TextEncoder().encode(s);
+  const d=await crypto.subtle.digest('SHA-256',b);
+  return Array.from(new Uint8Array(d)).map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+async function checkGate(){
+  const v=document.getElementById('gate-input').value;
+  const h=await _sha(v);
+  if(h===_h){
+    document.getElementById('gate').style.display='none';
+  }else{
+    const el=document.getElementById('gate-input');
+    el.classList.add('err');el.value='';
+    setTimeout(()=>el.classList.remove('err'),400);
+    el.placeholder='Incorrect — try again';
+    setTimeout(()=>el.placeholder='Enter password',1500);
+  }
+}
+document.getElementById('gate-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkGate();});
+
 buildPalette();
 // Wait until cwrap has real dimensions before first render
 function initLoad(){
