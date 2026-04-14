@@ -7,198 +7,218 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --p:#7C5CFC;--p2:#6B4EFF;--pl:#F0EDFF;--pb:rgba(124,92,252,.3);
-  --g:#16A34A;--gl:#F0FDF4;--gb:rgba(22,163,74,.25);
-  --r:#DC2626;--rl:#FEF2F2;
-  --a:#D97706;--al:#FFFBEB;
-  --canvas:#EEEDF4;
-  --card:#FFFFFF;--card2:#F7F6FF;
-  --bdr:rgba(0,0,0,.09);--bdr2:rgba(0,0,0,.14);
-  --txt:#18152E;--txt2:#64748B;--txt3:#94A3B8;
-  --conn:rgba(0,0,0,.18);
+  --bg:#1C2333;--canvas:#202840;--card:#1A2235;--card2:#263047;
+  --cb:rgba(124,92,252,.5);--p:#7C5CFC;--p2:#9B7FFF;--pl:rgba(124,92,252,.16);
+  --g:#22C55E;--gl:rgba(34,197,94,.15);
+  --txt:#F0EFFF;--txt2:rgba(240,239,255,.6);--txt3:rgba(240,239,255,.3);
+  --conn:rgba(255,255,255,.18);
 }
-html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--canvas);color:var(--txt);font-size:14px}
-.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
-.topbar{height:52px;background:#fff;border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;z-index:20}
-.logo{display:flex;align-items:center;gap:7px}
-.lv{width:24px;height:24px;background:var(--p);border-radius:5px;display:flex;align-items:center;justify-content:center}
-.lv svg{width:12px;height:12px}
-.ln{font-size:14px;font-weight:600;color:var(--txt)}
-.tdiv{width:1px;height:20px;background:var(--bdr);margin:0 2px}
-.lsub{font-size:13px;color:var(--txt3)}
-.wlbl{font-size:12px;color:var(--txt2);padding:3px 8px;border-radius:5px;border:.5px solid transparent;cursor:text;outline:none}
-.wlbl:focus{border-color:var(--pb);background:var(--pl)}
-.badge{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;border:.5px solid var(--pb);color:var(--p);background:var(--pl)}
+html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+/* TOPBAR */
+.topbar{height:52px;background:var(--bg);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 16px;gap:13px;flex-shrink:0;z-index:20}
+.logo-img{height:22px;object-fit:contain}
+.tdiv{width:1px;height:20px;background:rgba(255,255,255,.1)}
+.lsub{font-size:12px;color:var(--txt3)}
+.wlbl{font-size:12px;color:var(--txt2);padding:3px 8px;border-radius:6px;border:.5px solid transparent;cursor:text;outline:none;background:transparent}
+.wlbl:focus{border-color:var(--cb);background:var(--pl);color:var(--txt)}
+.badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;border:.5px solid var(--p);color:var(--p);background:var(--pl)}
 .tsp{flex:1}
-.tbtn{font-size:12px;font-weight:500;padding:5px 12px;border-radius:7px;border:.5px solid var(--bdr2);background:transparent;color:var(--txt2);cursor:pointer;transition:all .12s}
-.tbtn:hover{background:var(--card2);color:var(--txt)}
+.tbtn{font-size:12px;font-weight:500;padding:5px 13px;border-radius:8px;border:.5px solid rgba(255,255,255,.14);background:transparent;color:var(--txt2);cursor:pointer;transition:all .12s}
+.tbtn:hover{background:rgba(255,255,255,.07);color:var(--txt)}
 .tbtn.go{background:var(--p);border-color:var(--p);color:#fff}
 .tbtn.go:hover{background:var(--p2)}
-.zoom-ctrl{display:flex;align-items:center;background:var(--card2);border:.5px solid var(--bdr2);border-radius:7px;overflow:hidden}
-.zbtn{width:28px;height:28px;border:none;background:transparent;color:var(--txt2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.zoom-ctrl{display:flex;align-items:center;background:rgba(255,255,255,.05);border:.5px solid rgba(255,255,255,.11);border-radius:8px;overflow:hidden}
+.zbtn{width:28px;height:28px;border:none;background:transparent;color:var(--txt3);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .1s}
 .zbtn:hover{background:var(--pl);color:var(--p)}
-.zval{font-size:11px;font-weight:500;color:var(--txt2);padding:0 8px;border-left:.5px solid var(--bdr);border-right:.5px solid var(--bdr);min-width:44px;text-align:center}
+.zval{font-size:11px;color:var(--txt3);padding:0 8px;border-left:.5px solid rgba(255,255,255,.1);border-right:.5px solid rgba(255,255,255,.1);min-width:44px;text-align:center}
+/* BODY */
 .body{display:flex;flex:1;overflow:hidden}
-.sidebar{width:212px;background:#fff;border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;z-index:5}
+/* SIDEBAR */
+.sidebar{width:196px;background:var(--bg);border-right:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;z-index:5}
 .sbsec{padding:12px 14px 4px;font-size:9px;font-weight:600;color:var(--txt3);letter-spacing:.12em;text-transform:uppercase}
-.sbpillar{padding:8px 14px 3px;font-size:10px;font-weight:600;color:var(--txt2)}
 .sblist{padding:0 8px;display:flex;flex-direction:column;gap:2px;flex:1;overflow-y:auto;padding-bottom:12px}
-.sbi{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:7px;border:.5px solid transparent;cursor:grab;user-select:none;transition:all .12s}
-.sbi:hover{background:var(--card2);border-color:var(--bdr2)}
-.sbi:active{cursor:grabbing}
-.sbico{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sbico svg{width:11px;height:11px}
-.sbname{font-size:11px;font-weight:500;color:var(--txt2)}
-.sbfoot{padding:10px 12px;border-top:1px solid var(--bdr);flex-shrink:0}
-.sbstat{display:flex;justify-content:space-between;padding:3px 0;font-size:11px}
-.sbk{color:var(--txt3)}.sbv{font-weight:600;color:var(--txt2)}.sbv.g{color:var(--g)}
-.cwrap{flex:1;overflow:hidden;position:relative;cursor:grab;background:var(--canvas);background-image:radial-gradient(circle,rgba(0,0,0,.07) 1px,transparent 1px);background-size:24px 24px}
-.cwrap.panning{cursor:grabbing}
+.sbi{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:8px;border:.5px solid transparent;cursor:grab;user-select:none;transition:all .12s}
+.sbi:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+.sbi:active{cursor:grabbing;opacity:.6}
+.sbico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sbico svg{width:13px;height:13px}
+.sbname{font-size:11.5px;font-weight:500;color:var(--txt2)}
+/* CANVAS */
+.cwrap{flex:1;overflow:hidden;position:relative;cursor:default;background:var(--canvas);background-image:radial-gradient(circle,rgba(255,255,255,.045) 1px,transparent 1px);background-size:28px 28px}
+.cwrap.pan{cursor:grabbing}
 .cinner{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}
 .conn-svg{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
-.node-wrap{position:absolute;display:flex;flex-direction:column;align-items:center}
-.ctx-lbl{font-size:9.5px;color:var(--txt3);margin-bottom:6px;white-space:nowrap;font-style:italic;text-align:center}
-.node{width:168px;background:var(--card);border:1px solid var(--bdr2);border-radius:10px;padding:10px 12px;cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s;user-select:none}
-.node:hover{border-color:var(--pb);box-shadow:0 0 0 1px var(--pb),0 4px 14px rgba(124,92,252,.09)}
-.node.sel{border-color:var(--p);box-shadow:0 0 0 2.5px rgba(124,92,252,.18)}
-.node.done{border-color:var(--gb);background:var(--gl)}
-.node.risky{border-color:rgba(220,38,38,.35)}
-.ntop{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.nico{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nico svg{width:11px;height:11px}
-.ntitle{font-size:12px;font-weight:600;color:var(--txt);line-height:1.3;flex:1}
-.ncheck{width:15px;height:15px;border-radius:50%;background:var(--gl);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ncheck svg{width:8px;height:8px}
-.nasgn{display:flex;align-items:center;gap:5px;margin-bottom:5px}
-.nav{width:13px;height:13px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nav svg{width:8px;height:8px}
-.naname{font-size:10px;color:var(--txt3)}
-.nbar{height:2.5px;border-radius:2px;background:var(--card2);overflow:hidden;margin-top:2px}
-.nbarfill{height:100%;border-radius:2px;background:var(--p);transition:width .3s}
-.node.done .nbarfill{background:var(--g)}
-.nacts{display:flex;gap:5px;margin-top:7px}
-.nbtn{flex:1;font-size:10px;font-weight:500;padding:4px 0;border-radius:5px;border:.5px solid var(--bdr2);background:transparent;color:var(--txt2);cursor:pointer;transition:all .12s;text-align:center}
-.nbtn:hover{background:var(--card2);color:var(--txt)}
-.nbtn.ok{background:var(--p);border-color:var(--p);color:#fff}
-.nbtn.ok:hover{background:var(--p2)}
-.ndel{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:#fff;border:.5px solid var(--bdr2);color:var(--txt3);font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .12s;z-index:10}
-.node:hover .ndel{opacity:1}
-.ndel:hover{background:#FEE2E2;border-color:#FCA5A5;color:#B91C1C}
-.nbadges{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
-.nbadge{font-size:9px;font-weight:600;padding:2px 6px;border-radius:20px}
-.nbadge.tprm{background:#FEF2F2;color:#B91C1C;border:.5px solid #FECACA}
-.nbadge.soc{background:#FEF2F2;color:#9B1C1C;border:.5px solid #FECACA}
-.nbadge.shadow{background:#FFF7ED;color:#C2410C;border:.5px solid #FED7AA}
-.nbadge.bench{background:#F0FDF4;color:#15803D;border:.5px solid #BBF7D0}
-.nbadge.thresh{background:#EFF6FF;color:#1D4ED8;border:.5px solid #BFDBFE}
-.pill{margin-top:7px;height:23px;padding:0 9px;border-radius:20px;display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;cursor:default;white-space:nowrap}
-.pill svg{width:9px;height:9px;flex-shrink:0}
-.pill.purple{background:var(--p);color:#fff}
-.pill.green{background:var(--g);color:#fff}
-.pill.amber{background:var(--a);color:#fff}
-.pill.gray{background:rgba(0,0,0,.08);color:var(--txt2)}
-.add-btn{position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;border:1.5px solid var(--conn);display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);transition:border-color .12s,background .12s,transform .12s;z-index:6}
-.add-btn:hover{border-color:var(--p);background:var(--pl);transform:translate(-50%,-50%) scale(1.18)}
-.add-btn.dragover{border-color:var(--p);background:var(--pl);transform:translate(-50%,-50%) scale(1.22)}
-.add-btn svg{width:9px;height:9px;pointer-events:none}
-.par-bracket{position:absolute;background:rgba(124,92,252,.03);border:1px solid rgba(124,92,252,.2);border-radius:12px;pointer-events:none}
-.par-lbl{position:absolute;top:-10px;left:12px;font-size:9px;font-weight:600;color:var(--p);letter-spacing:.1em;text-transform:uppercase;background:var(--canvas);padding:0 6px;pointer-events:none;white-space:nowrap}
-.inspector{width:256px;background:#fff;border-left:1px solid var(--bdr);overflow-y:auto;flex-shrink:0;z-index:5}
-.ih{padding:14px 14px 10px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+/* NODE */
+.nw{position:absolute;user-select:none;z-index:3}
+.node{min-width:180px;background:var(--card);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 44px 11px 13px;cursor:grab;position:relative;transition:border-color .14s,box-shadow .14s,background .12s}
+.node:hover{border-color:var(--p);background:var(--card2);box-shadow:0 0 0 1px var(--p),0 4px 20px rgba(124,92,252,.14)}
+.node.sel{border-color:var(--p);box-shadow:0 0 0 2px rgba(124,92,252,.32);background:var(--card2)}
+.node.done{border-color:var(--g);box-shadow:0 0 0 1px var(--g)}
+.node:active{cursor:grabbing}
+.ntitle{font-size:13px;font-weight:600;color:var(--txt);line-height:1.3;margin-bottom:5px}
+.nmeta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tag{font-size:9.5px;padding:2px 7px;border-radius:20px;font-weight:600}
+.tag.auto{background:rgba(124,92,252,.2);color:var(--p2)}
+.tag.human{background:rgba(34,197,94,.15);color:#4ADE80}
+.tag.thresh{background:rgba(124,92,252,.2);color:var(--p2)}
+.dur{font-size:9.5px;color:var(--txt3)}
+.nstatus{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;border:1.5px dashed rgba(124,92,252,.4);display:flex;align-items:center;justify-content:center}
+.nstatus.ok{border-style:solid;border-color:var(--g);background:rgba(34,197,94,.12)}
+.nstatus svg{width:13px;height:13px}
+.ndel{position:absolute;top:-8px;right:-8px;width:17px;height:17px;border-radius:50%;background:#1A2235;border:.5px solid rgba(255,255,255,.15);color:var(--txt3);font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .12s;z-index:20;line-height:1}
+.nw:hover .ndel{opacity:1}
+.ndel:hover{background:rgba(220,38,38,.3);color:#FCA5A5;border-color:#FCA5A5}
+/* ADD BTN */
+.add-btn{position:absolute;width:22px;height:22px;border-radius:50%;background:var(--canvas);border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);transition:all .15s;z-index:15}
+.add-btn:hover,.add-btn.over{border-color:var(--p);background:var(--pl);transform:translate(-50%,-50%) scale(1.2)}
+.add-btn svg{pointer-events:none}
+/* BRANCH LABEL */
+.blbl{position:absolute;transform:translate(-50%,-50%);pointer-events:none;z-index:5}
+.blbl span{display:block;font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;background:var(--canvas);border:.5px solid}
+/* INSPECTOR */
+.inspector{width:252px;background:var(--bg);border-left:1px solid rgba(255,255,255,.07);overflow-y:auto;flex-shrink:0;z-index:5}
+.ih{padding:14px 14px 10px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between}
 .iht{font-size:12px;font-weight:600;color:var(--txt)}
-.ix{width:18px;height:18px;border-radius:4px;border:none;background:transparent;color:var(--txt3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-.ix:hover{background:var(--card2);color:var(--txt)}
+.ix{width:20px;height:20px;border-radius:5px;border:none;background:transparent;color:var(--txt3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.ix:hover{background:rgba(255,255,255,.08);color:var(--txt)}
 .ib{padding:12px 14px;display:flex;flex-direction:column;gap:11px}
-.isec{font-size:9.5px;font-weight:600;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;padding-bottom:5px;border-bottom:.5px solid var(--bdr)}
+.isec{font-size:9.5px;font-weight:600;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;padding-bottom:5px;border-bottom:.5px solid rgba(255,255,255,.07)}
 .ifield{display:flex;flex-direction:column;gap:4px}
 .ilbl{font-size:10.5px;color:var(--txt3)}
-.iin{width:100%;background:var(--card);border:.5px solid var(--bdr2);border-radius:6px;padding:6px 9px;font-size:12px;color:var(--txt);outline:none}
-.iin:focus{border-color:var(--pb)}
-.isel{width:100%;background:var(--card);border:.5px solid var(--bdr2);border-radius:6px;padding:6px 9px;font-size:12px;color:var(--txt);outline:none;cursor:pointer}
-.isel:focus{border-color:var(--pb)}
+.iin{width:100%;background:rgba(255,255,255,.05);border:.5px solid rgba(255,255,255,.12);border-radius:7px;padding:6px 10px;font-size:12px;color:var(--txt);outline:none}
+.iin:focus{border-color:var(--cb)}
+.isel{width:100%;background:rgba(255,255,255,.05);border:.5px solid rgba(255,255,255,.12);border-radius:7px;padding:6px 10px;font-size:12px;color:var(--txt);outline:none;cursor:pointer}
+.isel option{background:#1C2333}
+.isel:focus{border-color:var(--cb)}
 .trow{display:flex;align-items:center;justify-content:space-between}
 .tlbl{font-size:11.5px;color:var(--txt2)}
 .tog{position:relative;width:30px;height:17px}
 .tog input{opacity:0;width:0;height:0;position:absolute}
-.tsl{position:absolute;inset:0;background:var(--bdr2);border-radius:17px;cursor:pointer;transition:background .2s}
-.tsl::after{content:'';position:absolute;left:2.5px;top:2.5px;width:12px;height:12px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.tsl{position:absolute;inset:0;background:rgba(255,255,255,.15);border-radius:17px;cursor:pointer;transition:background .2s}
+.tsl::after{content:'';position:absolute;left:2.5px;top:2.5px;width:12px;height:12px;background:rgba(255,255,255,.5);border-radius:50%;transition:transform .2s}
 .tog input:checked+.tsl{background:var(--p)}
-.tog input:checked+.tsl::after{transform:translateX(13px)}
-.thresh-row{display:flex;align-items:center;gap:6px;margin-top:4px}
-.tin{flex:1;padding:5px 8px;border:.5px solid var(--bdr2);border-radius:6px;font-size:11.5px;color:var(--txt);outline:none;background:var(--card)}
-.tin:focus{border-color:var(--pb)}
-.bench-box{background:#F0FDF4;border:.5px solid #BBF7D0;border-radius:7px;padding:8px 10px}
-.bench-val{font-size:18px;font-weight:600;color:var(--g)}
-.bench-sub{font-size:9.5px;color:#15803D;margin-top:2px;line-height:1.4}
-.risk-box{background:#FEF2F2;border:.5px solid #FECACA;border-radius:7px;padding:8px 10px}
-.risk-val{font-size:11px;font-weight:600;color:var(--r)}
-.risk-sub{font-size:9.5px;color:#B91C1C;margin-top:2px;line-height:1.4}
-.iempty{padding:3rem 1rem;text-align:center;color:var(--txt3);font-size:12px;line-height:1.6}
-.cycle-bar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:#fff;border:.5px solid var(--bdr2);border-radius:10px;padding:9px 16px;display:flex;align-items:center;gap:14px;z-index:10;box-shadow:0 4px 16px rgba(0,0,0,.08);white-space:nowrap}
-.cb-title{font-size:11px;font-weight:600;color:var(--txt2)}
-.cb-track{display:flex;gap:2px;height:6px;width:180px;border-radius:3px;overflow:hidden}
-.cb-seg{height:100%}
-.cb-old{font-size:11px;color:var(--txt3);text-decoration:line-through}
-.cb-new{font-size:13px;font-weight:600;color:var(--g)}
-.cb-save{font-size:10px;font-weight:600;padding:2px 8px;background:var(--gl);color:var(--g);border-radius:20px}
-.toast{position:fixed;bottom:20px;right:20px;background:var(--txt);color:#fff;font-size:12px;padding:9px 14px;border-radius:8px;border-left:2px solid var(--p);opacity:0;transform:translateY(6px);transition:all .18s;pointer-events:none;z-index:999}
+.tog input:checked+.tsl::after{transform:translateX(13px);background:#fff}
+.thresh-box{background:rgba(124,92,252,.08);border:.5px solid rgba(124,92,252,.3);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.thresh-row{display:flex;align-items:center;gap:6px}
+.tin{flex:1;padding:5px 8px;border:.5px solid rgba(255,255,255,.15);border-radius:6px;font-size:12px;color:var(--txt);outline:none;background:rgba(255,255,255,.05)}
+.tin:focus{border-color:var(--cb)}
+.bench-box{background:rgba(34,197,94,.08);border:.5px solid rgba(34,197,94,.25);border-radius:8px;padding:8px 10px}
+.bval{font-size:20px;font-weight:700;color:#4ADE80}
+.bsub{font-size:9.5px;color:rgba(34,197,94,.7);margin-top:2px;line-height:1.4}
+.iempty{padding:3rem 1.25rem;text-align:center;color:var(--txt3);font-size:12px;line-height:1.75}
+.iaction{width:100%;padding:7px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:500;transition:all .12s}
+/* CYCLE BAR */
+.cybar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(26,34,53,.96);border:.5px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 16px;display:flex;align-items:center;gap:13px;z-index:10;box-shadow:0 4px 24px rgba(0,0,0,.35);white-space:nowrap}
+.cyt{font-size:11px;font-weight:600;color:var(--txt2)}
+.cytrack{display:flex;gap:2px;height:5px;width:150px;border-radius:3px;overflow:hidden}
+.cyseg{height:100%}
+.cyold{font-size:11px;color:var(--txt3);text-decoration:line-through}
+.cynew{font-size:13px;font-weight:700;color:#4ADE80}
+.cysave{font-size:10px;font-weight:600;padding:2px 8px;background:rgba(34,197,94,.15);color:#4ADE80;border-radius:20px}
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:#1A2235;border:.5px solid rgba(124,92,252,.4);color:var(--txt);font-size:12px;padding:9px 14px;border-radius:9px;border-left:2px solid var(--p);opacity:0;transform:translateY(6px);transition:all .18s;pointer-events:none;z-index:999}
 .toast.show{opacity:1;transform:translateY(0)}
+/* QUICK ADD */
+.qq{position:absolute;background:#1A2235;border:.5px solid rgba(255,255,255,.12);border-radius:10px;padding:5px;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.45);min-width:172px;max-height:360px;overflow-y:auto}
+.qqsec{font-size:9px;font-weight:600;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;padding:6px 8px 3px}
+.qqitem{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;cursor:pointer;transition:background .1s}
+.qqitem:hover{background:rgba(255,255,255,.07)}
+.qqico{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qqico svg{width:10px;height:10px}
+.qqname{font-size:11.5px;color:var(--txt);font-weight:500}
 </style>
 </head>
 <body>
 <div class="app">
 <div class="topbar">
-  <div class="logo"><div class="lv"><svg viewBox="0 0 12 12" fill="none"><path d="M1.5 2.5L6 9.5L10.5 2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="ln">vertice</span></div>
-  <div class="tdiv"></div><span class="lsub">Workflow Builder</span><div class="tdiv"></div>
+  <svg height="22" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M43.9088 12.9532L37.8314 28.7849H33.1812L27.0677 12.9532H32.3782L35.684 23.3608L38.9898 12.9532H43.9088ZM59.079 20.4589C59.079 15.7076 56.3615 12.4135 51.475 12.4135C45.8522 12.4135 43.3422 16.1286 43.3422 20.9392C43.3422 26.1385 46.2059 29.3175 52.1625 29.3247C54.1005 29.3247 56.1612 29.0062 57.9747 28.0851L58.3626 24.075C56.6628 24.8594 54.8096 25.2552 52.9384 25.2336C50.5709 25.2336 49.0985 24.6813 48.5752 22.6609H58.9599C59.0213 22.0745 59.0826 21.0652 59.079 20.4589ZM48.4471 19.5971C48.6329 17.5138 49.4341 16.4686 51.3974 16.474C53.117 16.474 54.133 17.5462 54.1636 19.5971H48.4471ZM68.6915 12.4135C67.4319 12.4135 65.8891 13.2195 65.1529 15.0905L64.8353 12.9532H60.5082V28.7867H65.5463V18.5249C66.0696 17.2962 67.1162 16.6557 68.7113 16.6557C69.2671 16.6593 69.812 16.8158 70.3317 17.0155L70.8298 13.1637C70.191 12.7913 69.4313 12.4027 68.6915 12.4135ZM84.1756 11.3341H89.2137V7.20883H84.1756V11.3341ZM84.1756 28.7849H89.2137V12.9532H84.1756V28.7849ZM99.3025 29.3247C100.613 29.3175 101.908 28.9936 103.112 28.4755L103.493 24.3772C102.329 24.8774 101.071 25.1275 99.8042 25.1113C97.8969 25.1113 95.8704 23.9527 95.8704 20.9464C95.8704 17.9402 97.7453 16.8338 99.9269 16.8338C101.044 16.8122 102.154 16.9687 103.186 17.3951L103.574 13.5037C102.258 12.8903 100.8 12.3829 99.3477 12.4117C93.9992 12.4117 90.7115 15.8569 90.7115 20.941C90.7115 26.0252 93.9595 29.3283 99.3025 29.3247ZM77.4865 22.6609V16.6539H81.9309L82.2503 12.9532H77.4865L77.5045 7.19624C77.5045 7.19624 73.0168 7.20703 72.3076 10.2978C72.2336 10.636 72.1994 10.9797 72.203 11.3251V23.3014C72.203 27.1298 74.4784 29.1807 78.4735 29.1807C79.5851 29.1807 80.684 29.0872 81.7522 28.7831L82.0969 24.8306C81.3192 25.0591 80.5108 25.1616 79.7024 25.1364C78.1018 25.1059 77.4865 24.3107 77.4865 22.6609ZM120 20.4589C120 15.7076 117.281 12.4135 112.394 12.4135C106.771 12.4135 104.261 16.1286 104.261 20.9392C104.261 26.1385 107.125 29.3175 113.082 29.3247C115.02 29.3247 117.08 29.0062 118.894 28.0851L119.282 24.075C117.582 24.8594 115.729 25.2552 113.857 25.2336C111.49 25.2336 110.018 24.6813 109.494 22.6609H119.879C119.94 22.0745 120.003 21.0652 120 20.4589ZM109.368 19.5971C109.554 17.5138 110.353 16.4686 112.316 16.474C114.036 16.474 115.052 17.5462 115.083 19.5971H109.368Z" fill="white"/>
+<path d="M20.7268 0.214094C20.0934 -0.0341764 19.4148 -0.0755547 18.8211 0.140332C18.5414 0.242879 18.1462 0.406593 17.7798 0.714232L7.30398 9.40368C8.69355 11.0678 10.7635 12.0465 12.9416 12.0627L7.91034 24.7928C5.97397 19.1888 3.64239 12.4387 3.64239 12.4387L2.40803 13.4624C0.347145 15.1265 -0.558778 17.9582 0.356168 20.6028L5.00308 34.0418C5.27017 34.8082 5.85487 35.4594 6.67236 35.7797C8.15577 36.3626 9.83227 35.6357 10.417 34.1569L22.3546 3.94534C22.9393 2.46651 22.2102 0.796988 20.7268 0.214094Z" fill="white"/>
+</svg>
+  <div class="tdiv"></div>
+  <span class="lsub">Workflow Builder</span>
+  <div class="tdiv"></div>
   <span class="wlbl" contenteditable="true" id="wf-title">Acme Media Group — New Vendor Request</span>
   <span class="badge">Draft</span>
   <div class="tsp"></div>
-  <div class="zoom-ctrl"><button class="zbtn" onclick="zoom(-0.1)">&#8722;</button><span class="zval" id="zval">100%</span><button class="zbtn" onclick="zoom(0.1)">&#43;</button></div>
+  <div class="zoom-ctrl">
+    <button class="zbtn" onclick="zoom(-0.15)">&#8722;</button>
+    <span class="zval" id="zval">100%</span>
+    <button class="zbtn" onclick="zoom(0.15)">&#43;</button>
+  </div>
   <button class="tbtn" onclick="fitView()">Fit</button>
   <button class="tbtn" onclick="resetWF()">Reset</button>
   <button class="tbtn go" onclick="showToast('Workflow published — reviewers notified via Slack.')">Publish</button>
 </div>
 <div class="body">
 <div class="sidebar">
-  <div class="sbsec">Step library — 8 I2P pillars</div>
   <div class="sblist" id="palette"></div>
-  <div class="sbfoot">
-    <div class="sbsec" style="padding:0 0 6px">Metrics</div>
-    <div class="sbstat"><span class="sbk">Total steps</span><span class="sbv" id="m-steps">-</span></div>
-    <div class="sbstat"><span class="sbk">Parallel paths</span><span class="sbv" id="m-par">-</span></div>
-    <div class="sbstat"><span class="sbk">Cycle time</span><span class="sbv g" id="m-cycle">-</span></div>
-    <div class="sbstat"><span class="sbk">Sequential baseline</span><span class="sbv" style="text-decoration:line-through;color:var(--txt3)">42 days</span></div>
-  </div>
 </div>
 <div class="cwrap" id="cwrap">
   <div class="cinner" id="cinner">
-    <svg class="conn-svg" id="conn-svg" width="5000" height="2000"></svg>
+    <svg class="conn-svg" id="csvg" width="6000" height="3000"></svg>
   </div>
-  <div class="cycle-bar"><span class="cb-title">Cycle time</span><div class="cb-track" id="cb-track"></div><span class="cb-old">42 days</span><span style="color:var(--txt3)">→</span><span class="cb-new" id="cb-new">8 days</span><span class="cb-save" id="cb-save">81% faster</span></div>
+  <div class="cybar">
+    <span class="cyt">Cycle time</span>
+    <div class="cytrack" id="cytrack"></div>
+    <span class="cyold">42 days</span>
+    <span style="color:var(--txt3);font-size:11px">→</span>
+    <span class="cynew" id="cynew">8 days</span>
+    <span class="cysave" id="cysave">81% faster</span>
+  </div>
 </div>
 <div class="inspector">
-  <div class="iempty" id="ie"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="margin:0 auto 10px;display:block"><rect x="4" y="4" width="20" height="20" rx="4" stroke="rgba(0,0,0,.15)" stroke-width="1.5"/><path d="M9 14h10M9 10h6M9 18h4" stroke="rgba(0,0,0,.15)" stroke-width="1.5" stroke-linecap="round"/></svg>Select a node to<br>configure it</div>
+  <div class="iempty" id="ie">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style="margin:0 auto 10px;display:block;opacity:.25"><rect x="4" y="4" width="24" height="24" rx="5" stroke="white" stroke-width="1.5"/><path d="M10 16h12M10 12h8M10 20h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Click a node to configure it.<br><br>
+    Drag nodes to reposition.<br><br>
+    Click <strong style="color:var(--p2)">+</strong> on any connector to insert a step, or drag from the sidebar to a free area.
+  </div>
   <div id="ip" style="display:none">
     <div class="ih"><span class="iht" id="iht">Configure</span><button class="ix" onclick="deselect()">&#x2715;</button></div>
     <div class="ib">
-      <div class="isec">Details</div>
-      <div class="ifield"><label class="ilbl">Step name</label><input class="iin" id="in-name" oninput="upd('label',this.value)"></div>
-      <div class="ifield"><label class="ilbl">Assignee</label><select class="isel" id="in-asgn" onchange="upd('assignee',this.value)"><option>Vertice AI</option><option>Procurement Lead</option><option>Head of IT</option><option>CFO</option><option>Legal team</option><option>Finance team</option></select></div>
-      <div class="ifield"><label class="ilbl">Duration</label><select class="isel" id="in-dur" onchange="upd('dur',+this.value)"><option value="1">~1 day</option><option value="2">~2 days</option><option value="3">~3 days</option><option value="5">~5 days</option><option value="7">~1 week</option><option value="13">~13 days</option></select></div>
-      <div class="isec" style="margin-top:2px">Approval &amp; routing</div>
-      <div class="ifield"><select class="isel" id="in-appr" onchange="updApproval(this.value)"><option value="auto">Automated (Vertice AI)</option><option value="human">Human approval</option><option value="threshold">Spend threshold branching</option></select></div>
-      <div id="thresh-ui" style="display:none;flex-direction:column;gap:6px">
-        <div class="thresh-row"><span class="ilbl" style="white-space:nowrap">Threshold (£)</span><input class="tin" id="in-thresh" type="number" value="10000" oninput="upd('threshold',+this.value)"></div>
-        <div style="font-size:9.5px;color:var(--txt3);line-height:1.5;padding:6px 8px;background:var(--pl);border-radius:6px"><strong style="color:var(--p)">Above threshold</strong> → CFO sign-off required<br><strong style="color:var(--g)">Below threshold</strong> → auto-approved, continues</div>
+      <div class="isec">Step details</div>
+      <div class="ifield"><label class="ilbl">Name</label><input class="iin" id="in-name" oninput="upd('label',this.value)"></div>
+      <div class="ifield"><label class="ilbl">Assignee</label>
+        <select class="isel" id="in-asgn" onchange="upd('assignee',this.value)">
+          <option>Vertice AI</option><option>Procurement Lead</option><option>Head of IT</option><option>CFO</option><option>Legal team</option><option>Finance team</option>
+        </select>
       </div>
-      <div id="bench-ui" style="display:none"><div class="bench-box"><div class="bench-val" id="bench-val">20–45%</div><div class="bench-sub">Vertice benchmark saving for this category<br>Based on 32,000+ vendor contracts</div></div></div>
-      <div class="isec" style="margin-top:2px">Risk &amp; compliance</div>
-      <div class="trow"><span class="tlbl">Notify via Slack / Teams</span><label class="tog"><input type="checkbox" id="tog-sl" onchange="upd('slack',this.checked)" checked><span class="tsl"></span></label></div>
+      <div class="ifield"><label class="ilbl">Duration</label>
+        <select class="isel" id="in-dur" onchange="upd('dur',+this.value)">
+          <option value="1">~1 day</option><option value="2">~2 days</option><option value="3">~3 days</option><option value="5">~5 days</option><option value="7">~1 week</option>
+        </select>
+      </div>
+      <div class="isec" style="margin-top:2px">Routing</div>
+      <div class="ifield">
+        <select class="isel" id="in-appr" onchange="updApproval(this.value)">
+          <option value="auto">Automated (Vertice AI)</option>
+          <option value="human">Human approval</option>
+          <option value="threshold">Spend threshold branching</option>
+        </select>
+      </div>
+      <div id="thresh-ui" style="display:none">
+        <div class="thresh-box">
+          <div class="thresh-row">
+            <span class="ilbl" style="white-space:nowrap">Threshold £</span>
+            <input class="tin" id="in-thresh" type="number" value="10000" oninput="upd('threshold',+this.value)">
+          </div>
+          <div style="font-size:9.5px;color:rgba(124,92,252,.8);line-height:1.5">Above → CFO sign-off required<br>Below → auto-approved</div>
+        </div>
+      </div>
+      <div id="bench-ui" style="display:none">
+        <div class="bench-box"><div class="bval">20–45%</div><div class="bsub">Vertice benchmark saving · 32,000+ vendor contracts</div></div>
+      </div>
+      <div class="isec" style="margin-top:2px">Options</div>
+      <div class="trow"><span class="tlbl">Notify via Slack</span><label class="tog"><input type="checkbox" id="tog-sl" onchange="upd('slack',this.checked)" checked><span class="tsl"></span></label></div>
       <div class="trow"><span class="tlbl">Auto-escalate (2 days)</span><label class="tog"><input type="checkbox" id="tog-es" onchange="upd('escalate',this.checked)"><span class="tsl"></span></label></div>
-      <div class="trow"><span class="tlbl">TPRM / InfoSec sign-off</span><label class="tog"><input type="checkbox" id="tog-is" onchange="upd('infosec',this.checked)"><span class="tsl"></span></label></div>
-      <div class="trow"><span class="tlbl">SOC 2 compliance check</span><label class="tog"><input type="checkbox" id="tog-soc" onchange="upd('soc2',this.checked)"><span class="tsl"></span></label></div>
-      <div class="trow"><span class="tlbl">Shadow AI risk flag</span><label class="tog"><input type="checkbox" id="tog-shadow" onchange="upd('shadow',this.checked)"><span class="tsl"></span></label></div>
-      <div id="risk-ui" style="display:none"><div class="risk-box"><div class="risk-val">Shadow AI risk detected</div><div class="risk-sub">71% of employees use unapproved AI. This step checks the vendor against your approved tool registry before proceeding.</div></div></div>
+      <div class="trow"><span class="tlbl">TPRM / InfoSec</span><label class="tog"><input type="checkbox" id="tog-is" onchange="upd('infosec',this.checked)"><span class="tsl"></span></label></div>
+      <div class="trow"><span class="tlbl">SOC 2 check</span><label class="tog"><input type="checkbox" id="tog-soc" onchange="upd('soc2',this.checked)"><span class="tsl"></span></label></div>
+      <div class="trow"><span class="tlbl">Shadow AI flag</span><label class="tog"><input type="checkbox" id="tog-shadow" onchange="upd('shadow',this.checked)"><span class="tsl"></span></label></div>
+      <div class="isec" style="margin-top:2px">Actions</div>
+      <button class="iaction" onclick="approveSelStep()" style="border:.5px solid rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:#4ADE80">Mark as approved</button>
+      <button class="iaction" onclick="deleteSelStep()" style="border:.5px solid rgba(248,113,113,.3);background:rgba(248,113,113,.07);color:#F87171;margin-top:5px">Delete step</button>
     </div>
   </div>
 </div>
@@ -207,316 +227,224 @@ html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
 <div class="toast" id="toast"></div>
 <script>
 const PILLARS=[
-  {label:'Intake & forms',steps:[
-    {id:'intake',  label:'Intake form',      c:'#7C5CFC',bg:'#F0EDFF',icon:'M1.5 1.5h9v9h-9zM3.5 5.5h5M3.5 3.5h3',                                                   pill:'SUBMITTED',pc:'purple',bench:null,   sl:'1. Request submission'},
-    {id:'ai',      label:'AI triage',        c:'#7C5CFC',bg:'#F0EDFF',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4 6l2 2 3.5-4.5',                                         pill:'VALIDATED', pc:'purple',bench:null,   sl:'2. Automated triage'},
+  {label:'Intake & triage',steps:[
+    {id:'intake',  name:'Intake form',       c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M1.5 1.5h9v9h-9zM3.5 5.5h5M3.5 3.5h3',bench:false},
+    {id:'ai',      name:'AI triage',         c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4 6l2 2 3.5-4.5',bench:false},
   ]},
-  {label:'Approvals & workflows',steps:[
-    {id:'finance', label:'Finance approval', c:'#16A34A',bg:'#F0FDF4',icon:'M1.5 3.5h9v7h-9zM4 3.5v-1.5a2 2 0 014 0v1.5M3.5 6.5h5',                                 pill:'APPROVED', pc:'green', bench:null,   sl:'3. Approval orchestration'},
-    {id:'legal',   label:'Legal approval',   c:'#7C5CFC',bg:'#F0EDFF',icon:'M2.5 1h7a1 1 0 011 1v9a1 1 0 01-1 1h-7a1 1 0 01-1-1v-9a1 1 0 011-1zM3 4h6M3 6h6M3 8h4',pill:'APPROVED', pc:'green', bench:null,   sl:'3. Approval orchestration'},
-    {id:'exec',    label:'Exec sign-off',    c:'#D97706',bg:'#FFFBEB',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM6 3.5V6l2 1.5',                                           pill:'SIGNED',   pc:'amber', bench:null,   sl:'3. Approval orchestration'},
+  {label:'Approvals',steps:[
+    {id:'finance', name:'Finance approval',  c:'#4ADE80',bg:'rgba(34,197,94,.2)', icon:'M1.5 3.5h9v7h-9zM4 3.5v-1.5a2 2 0 014 0v1.5M3.5 6.5h5',bench:false},
+    {id:'legal',   name:'Legal review',      c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M2.5 1h7a1 1 0 011 1v9a1 1 0 01-1 1h-7a1 1 0 01-1-1v-9a1 1 0 011-1zM3 4h6M3 6h6M3 8h4',bench:false},
+    {id:'exec',    name:'Exec sign-off',     c:'#FCD34D',bg:'rgba(245,158,11,.2)', icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM6 3.5V6l2 1.5',bench:false},
   ]},
-  {label:'Risk management',steps:[
-    {id:'infosec', label:'Security review',  c:'#DC2626',bg:'#FEF2F2',icon:'M6 1L1 3.5v3c0 2.5 2 4 5 4.5 3-.5 5-2 5-4.5v-3zM4 6l2 2 3-3.5',                        pill:'CLEARED',  pc:'green', bench:null,   sl:'3. Approval orchestration'},
-    {id:'tprm',    label:'TPRM check',       c:'#DC2626',bg:'#FEF2F2',icon:'M9 2H3a1 1 0 00-1 1v7a1 1 0 001 1h6a1 1 0 001-1V3a1 1 0 00-1-1zM4 5.5h4M4 7.5h2',     pill:'CLEARED',  pc:'green', bench:null,   sl:'3. Approval orchestration'},
+  {label:'Risk & compliance',steps:[
+    {id:'infosec', name:'Security review',   c:'#F87171',bg:'rgba(239,68,68,.2)',  icon:'M6 1L1 3.5v3c0 2.5 2 4 5 4.5 3-.5 5-2 5-4.5v-3zM4 6l2 2 3-3.5',bench:false},
+    {id:'tprm',    name:'TPRM check',        c:'#F87171',bg:'rgba(239,68,68,.2)',  icon:'M9 2H3a1 1 0 00-1 1v7a1 1 0 001 1h6a1 1 0 001-1V3a1 1 0 00-1-1zM4 5.5h4M4 7.5h2',bench:false},
   ]},
-  {label:'Vendor management',steps:[
-    {id:'procurement',label:'Commercial check',c:'#D97706',bg:'#FFFBEB',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4.5 6h3M6 4.5v3',                                      pill:'CHECKED',  pc:'amber', bench:null,   sl:'3. Approval orchestration'},
-    {id:'negotiate',label:'Negotiation',     c:'#16A34A',bg:'#F0FDF4',icon:'M1.5 9L6 2l4.5 7M3.5 7h5',                                                               pill:'AGREED',   pc:'green', bench:'20–45%',sl:'4. Sourcing & benchmarking'},
+  {label:'Vendor & sourcing',steps:[
+    {id:'negotiate',name:'Negotiation',      c:'#4ADE80',bg:'rgba(34,197,94,.2)', icon:'M1.5 9L6 2l4.5 7M3.5 7h5',bench:true},
+    {id:'commercial',name:'Commercial check',c:'#FCD34D',bg:'rgba(245,158,11,.2)', icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4.5 6h3M6 4.5v3',bench:false},
   ]},
-  {label:'Integrations & execution',steps:[
-    {id:'approve', label:'Final approval',   c:'#16A34A',bg:'#F0FDF4',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4 6l2 2 3.5-4',                                           pill:'APPROVED', pc:'green', bench:null,   sl:'5. Procurement execution'},
-    {id:'po',      label:'PO creation',      c:'#7C5CFC',bg:'#F0EDFF',icon:'M2.5 1.5h7l2 2v8a1 1 0 01-1 1h-8a1 1 0 01-1-1v-9a1 1 0 011-1zM4.5 5.5h5M4.5 7.5h3',   pill:'RAISED',   pc:'purple',bench:null,   sl:'5. Procurement execution'},
-    {id:'notify',  label:'Slack notification',c:'#7C5CFC',bg:'#F0EDFF',icon:'M1.5 2.5h9a1 1 0 011 1v6a1 1 0 01-1 1H2.5L1 12V3.5a1 1 0 011-1zM3.5 5.5h5M3.5 7.5h3',pill:'SENT',     pc:'purple',bench:null,   sl:'5. Procurement execution'},
+  {label:'Execution',steps:[
+    {id:'approve', name:'Final approval',    c:'#4ADE80',bg:'rgba(34,197,94,.2)', icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4 6l2 2 3.5-4',bench:false},
+    {id:'po',      name:'PO creation',       c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M2.5 1.5h7l2 2v8a1 1 0 01-1 1h-8a1 1 0 01-1-1v-9a1 1 0 011-1zM4.5 5.5h5M4.5 7.5h3',bench:false},
+    {id:'notify',  name:'Slack notification',c:'#9B7FFF',bg:'rgba(124,92,252,.22)',icon:'M1.5 2.5h9a1 1 0 011 1v6a1 1 0 01-1 1H2.5L1 12V3.5a1 1 0 011-1zM3.5 5.5h5M3.5 7.5h3',bench:false},
   ]},
 ];
 const TYPES=PILLARS.flatMap(p=>p.steps);
 function TT(id){return TYPES.find(t=>t.id===id)||TYPES[0]}
 
-const NW=168,NH=128,COL=84,MAIN_Y=180,BRANCH_UP=MAIN_Y-170,BRANCH_DN=MAIN_Y+170,PAR_V=158;
+const NW=185,NH=70;
 
-let wf=[
-  {id:'n1',type:'intake',    label:'Dynamic intake form',   assignee:'Vertice AI',   dur:1,approval:'auto',     slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:true, progress:100,threshold:0},
-  {id:'n2',type:'ai',        label:'AI triage & validation',assignee:'Vertice AI',   dur:1,approval:'auto',     slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:true, progress:100,threshold:0},
-  {id:'P1',parallel:true,steps:[
-    {id:'p1',type:'infosec',   label:'Security Review',      assignee:'Kevin Smith',  dur:3,approval:'human',   slack:true,escalate:true, infosec:true, soc2:true, shadow:true, done:true, progress:100,threshold:0},
-    {id:'p2',type:'legal',     label:'Legal Approval',       assignee:'Marcus Adams', dur:3,approval:'human',   slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:20, threshold:0},
-    {id:'p3',type:'procurement',label:'Commercial check',    assignee:'Proc. Lead',   dur:2,approval:'human',   slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:40, threshold:0},
-  ]},
-  {id:'n3',type:'finance',   label:'Finance approval',      assignee:'Finance team', dur:2,approval:'threshold',slack:true,escalate:true, infosec:false,soc2:false,shadow:false,done:false,progress:60, threshold:10000,
-    hiStep:{id:'h1',type:'exec',  label:'CFO sign-off', assignee:'CFO',        dur:1,approval:'human',slack:true,escalate:true, infosec:false,soc2:false,shadow:false,done:false,progress:0,threshold:0},
-    loStep:{id:'l1',type:'notify',label:'Auto-approved',assignee:'Vertice AI', dur:1,approval:'auto', slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:0,threshold:0},
-  },
-  {id:'n4',type:'negotiate', label:'Vendor negotiation',    assignee:'Vertice AI',   dur:5,approval:'auto',     slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:0, threshold:0},
-  {id:'n5',type:'approve',   label:'Final approval',        assignee:'CFO',          dur:1,approval:'human',    slack:true,escalate:true, infosec:false,soc2:false,shadow:false,done:false,progress:0, threshold:0},
-  {id:'n6',type:'po',        label:'PO creation',           assignee:'Vertice AI',   dur:1,approval:'auto',     slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:0, threshold:0},
-];
-
-let sel=null,dragTypeId=null;
-let px=60,py=60,scale=1,isPanning=false,didPan=false,sx=0,sy=0;
-const cwrap=document.getElementById('cwrap'),cinner=document.getElementById('cinner');
-
-function applyT(){cinner.style.transform=`translate(${px}px,${py}px) scale(${scale})`;document.getElementById('zval').textContent=Math.round(scale*100)+'%';}
-cwrap.addEventListener('mousedown',e=>{if(e.target.closest('.node,.sbi,.add-btn,.ndel,.nbtn,.ix,.tog,.iin,.isel,.tin'))return;isPanning=true;didPan=false;sx=e.clientX-px;sy=e.clientY-py;cwrap.classList.add('panning');e.preventDefault();});
-window.addEventListener('mousemove',e=>{if(!isPanning)return;px=e.clientX-sx;py=e.clientY-sy;if(Math.abs(e.movementX)+Math.abs(e.movementY)>2)didPan=true;applyT();});
-window.addEventListener('mouseup',()=>{isPanning=false;cwrap.classList.remove('panning');});
-cwrap.addEventListener('wheel',e=>{e.preventDefault();const d=-e.deltaY*.001,r=cwrap.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,ps=scale;scale=Math.min(2,Math.max(.25,scale+d));px=mx-(mx-px)*(scale/ps);py=my-(my-py)*(scale/ps);applyT();},{passive:false});
-function zoom(d){scale=Math.min(2,Math.max(.25,scale+d));applyT();}
-function fitView(){px=60;py=60;scale=1;applyT();}
-
-// ── LAYOUT ──
-function calcLayout(){
-  // Returns array of {step,cx,cy,kind}
-  // kind: 'main'|'par'|'thresh'|'hi'|'lo'
-  const items=[];
-  let cx=NW/2+20;
-
-  wf.forEach((item,wi)=>{
-    if(item.parallel){
-      const n=item.steps.length;
-      const totalH=(n-1)*PAR_V;
-      item.steps.forEach((step,si)=>{
-        items.push({step,cx,cy:MAIN_Y-totalH/2+si*PAR_V,kind:'par',parItem:item});
-      });
-      cx+=NW+COL;
-    } else if(item.approval==='threshold'){
-      // root node on main row
-      items.push({step:item,cx,cy:MAIN_Y,kind:'thresh'});
-      const bCx=cx+NW+COL;
-      // hi goes up, lo goes down
-      if(item.hiStep) items.push({step:item.hiStep,cx:bCx,cy:BRANCH_UP,kind:'hi',owner:item,ownerCx:cx});
-      if(item.loStep) items.push({step:item.loStep,cx:bCx,cy:BRANCH_DN,kind:'lo',owner:item,ownerCx:cx});
-      cx=bCx+NW+COL;
-    } else {
-      items.push({step:item,cx,cy:MAIN_Y,kind:'main'});
-      cx+=NW+COL;
-    }
-  });
-  return {items,totalW:cx+NW};
+let uid=0;
+function mkStep(type,x,y,extra={}){
+  const t=TT(type);
+  return {id:'n'+(++uid),type,label:t.name,assignee:'Vertice AI',dur:2,approval:'auto',slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,x,y,...extra};
 }
 
-// ── RENDER ──
-function render(){
-  cinner.querySelectorAll('.node-wrap,.par-bracket,.add-btn').forEach(e=>e.remove());
-  const svg=document.getElementById('conn-svg');
-  svg.innerHTML='';
-  const {items,totalW}=calcLayout();
-  svg.setAttribute('width',totalW+200);
+let nodes=[
+  mkStep('intake',    50,  200,{label:'Dynamic intake form',    assignee:'Vertice AI',   dur:1,approval:'auto', done:true}),
+  mkStep('ai',        320, 200,{label:'AI triage & validation', assignee:'Vertice AI',   dur:1,approval:'auto', done:true}),
+  mkStep('infosec',   590, 80, {label:'Security Review',        assignee:'Kevin Smith',  dur:3,approval:'human',infosec:true,soc2:true,shadow:true,done:true}),
+  mkStep('legal',     590, 200,{label:'Legal Approval',         assignee:'Marcus Adams', dur:3,approval:'human',done:false}),
+  mkStep('commercial',590, 320,{label:'Commercial check',       assignee:'Proc. Lead',   dur:2,approval:'human',done:false}),
+  mkStep('finance',   860, 200,{label:'Finance approval',       assignee:'Finance team', dur:2,approval:'threshold',threshold:10000,done:false}),
+  mkStep('exec',      1130,80, {label:'CFO sign-off',           assignee:'CFO',          dur:1,approval:'human',done:false}),
+  mkStep('notify',    1130,320,{label:'Auto-approved',          assignee:'Vertice AI',   dur:1,approval:'auto', done:false}),
+  mkStep('negotiate', 1400,200,{label:'Vendor negotiation',     assignee:'Vertice AI',   dur:5,approval:'auto', done:false}),
+  mkStep('approve',   1670,200,{label:'Final approval',         assignee:'CFO',          dur:1,approval:'human',done:false}),
+  mkStep('po',        1940,200,{label:'PO creation',            assignee:'Vertice AI',   dur:1,approval:'auto', done:false}),
+];
 
-  drawConns(items,svg);
-  drawParBrackets(items);
-  items.forEach(p=>placeNode(p));
-  drawAddBtns(items);
-  updateMetrics(items);
+let conns=[];
+function buildConns(){
+  const [n0,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10]=nodes;
+  conns=[
+    {from:n0.id,to:n1.id},
+    {from:n1.id,to:n2.id},{from:n1.id,to:n3.id},{from:n1.id,to:n4.id},
+    {from:n2.id,to:n5.id},{from:n3.id,to:n5.id},{from:n4.id,to:n5.id},
+    {from:n5.id,to:n6.id,label:'Above £10k',color:'#9B7FFF'},
+    {from:n5.id,to:n7.id,label:'Below £10k',color:'#4ADE80'},
+    {from:n6.id,to:n8.id},{from:n7.id,to:n8.id},
+    {from:n8.id,to:n9.id},{from:n9.id,to:n10.id},
+  ];
+}
+buildConns();
+
+let sel=null,dragTypeId=null;
+let px=40,py=40,scale=1,isPan=false,didPan=false,psx=0,psy=0;
+let dragNodeId=null,dragOx=0,dragOy=0,dragMoved=false;
+
+const cwrap=document.getElementById('cwrap'),cinner=document.getElementById('cinner');
+function applyT(){cinner.style.transform=`translate(${px}px,${py}px) scale(${scale})`;document.getElementById('zval').textContent=Math.round(scale*100)+'%';}
+
+cwrap.addEventListener('mousedown',e=>{
+  if(e.target.closest('.node,.sbi,.add-btn,.ndel,.ix,.tog,.iin,.isel,.tin,.iaction'))return;
+  isPan=true;didPan=false;psx=e.clientX-px;psy=e.clientY-py;cwrap.classList.add('pan');e.preventDefault();
+});
+window.addEventListener('mousemove',e=>{
+  if(isPan){px=e.clientX-psx;py=e.clientY-psy;if(Math.abs(e.movementX)+Math.abs(e.movementY)>2)didPan=true;applyT();return;}
+  if(dragNodeId){
+    dragMoved=true;
+    const n=nodes.find(n=>n.id===dragNodeId);
+    if(n){
+      const rawX=(e.clientX-dragOx-px)/scale;
+      const rawY=(e.clientY-dragOy-py)/scale;
+      const G=24;
+      n.x=Math.round(rawX/G)*G;
+      n.y=Math.round(rawY/G)*G;
+    }
+    renderConnsOnly();
+    positionNode(n);
+  }
+});
+window.addEventListener('mouseup',()=>{
+  if(isPan){isPan=false;cwrap.classList.remove('pan');}
+  if(dragNodeId){
+    if(!dragMoved)selectNode(nodes.find(n=>n.id===dragNodeId));
+    dragNodeId=null;dragMoved=false;render();
+  }
+});
+cwrap.addEventListener('wheel',e=>{
+  e.preventDefault();const d=-e.deltaY*.001,r=cwrap.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,ps=scale;
+  scale=Math.min(2.5,Math.max(.2,scale+d));px=mx-(mx-px)*(scale/ps);py=my-(my-py)*(scale/ps);applyT();
+},{passive:false});
+function zoom(d){scale=Math.min(2.5,Math.max(.2,scale+d));applyT();}
+function fitView(){px=40;py=40;scale=1;applyT();}
+
+/* ── FULL RENDER ── */
+function render(){
+  cinner.querySelectorAll('.nw,.add-btn,.blbl').forEach(e=>e.remove());
+  renderConnsOnly();
+  nodes.forEach(n=>placeNode(n));
+  drawAddBtns();
   renderCycleBar();
 }
 
-// ── SVG CONNECTIONS ──
-const NS='http://www.w3.org/2000/svg';
-function mkPath(x1,y1,x2,y2,color,dash){
-  const p=document.createElementNS(NS,'path');
-  const mx=(x1+x2)/2;
-  p.setAttribute('d',`M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`);
-  p.setAttribute('fill','none');p.setAttribute('stroke',color);p.setAttribute('stroke-width','1.5');
-  if(dash)p.setAttribute('stroke-dasharray','6 4');
-  return p;
-}
-function mkArrow(x,y,color){
-  const a=document.createElementNS(NS,'path');
-  a.setAttribute('d',`M${x-7} ${y-4} L${x} ${y} L${x-7} ${y+4}`);
-  a.setAttribute('fill','none');a.setAttribute('stroke',color);a.setAttribute('stroke-width','1.5');
-  a.setAttribute('stroke-linecap','round');a.setAttribute('stroke-linejoin','round');
-  return a;
-}
-// pill label on a path midpoint
-function mkPillLabel(x,y,text,color,bg){
-  const g=document.createElementNS(NS,'g');
-  const PADX=7,PADY=3,TW=text.length*5.5+PADX*2,TH=16;
-  const rx=document.createElementNS(NS,'rect');
-  rx.setAttribute('x',x-TW/2);rx.setAttribute('y',y-TH/2);rx.setAttribute('width',TW);rx.setAttribute('height',TH);rx.setAttribute('rx',TH/2);rx.setAttribute('fill',bg);
-  const tx=document.createElementNS(NS,'text');
-  tx.setAttribute('x',x);tx.setAttribute('y',y+1);tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','middle');
-  tx.setAttribute('font-size','9');tx.setAttribute('font-weight','700');tx.setAttribute('fill',color);tx.setAttribute('font-family','-apple-system,Segoe UI,system-ui,sans-serif');
-  tx.textContent=text;
-  g.appendChild(rx);g.appendChild(tx);
-  return g;
+function renderConnsOnly(){
+  const svg=document.getElementById('csvg');svg.innerHTML='';
+  const NS='http://www.w3.org/2000/svg';
+  conns.forEach((c,ci)=>{
+    const fn=nodes.find(n=>n.id===c.from),tn=nodes.find(n=>n.id===c.to);
+    if(!fn||!tn)return;
+    const ax=fn.x+NW/2,ay=fn.y+NH/2,bx=tn.x,by=tn.y+NH/2;
+    const mx=(ax+bx)/2;
+    const color=c.color||'rgba(255,255,255,.18)';
+    const p=document.createElementNS(NS,'path');
+    p.setAttribute('d',`M${ax} ${ay} C${mx} ${ay} ${mx} ${by} ${bx} ${by}`);
+    p.setAttribute('fill','none');p.setAttribute('stroke',color);p.setAttribute('stroke-width','1.5');
+    svg.appendChild(p);
+    const arr=document.createElementNS(NS,'path');
+    arr.setAttribute('d',`M${bx-8} ${by-4} L${bx} ${by} L${bx-8} ${by+4}`);
+    arr.setAttribute('fill','none');arr.setAttribute('stroke',color);arr.setAttribute('stroke-width','1.5');arr.setAttribute('stroke-linecap','round');arr.setAttribute('stroke-linejoin','round');
+    svg.appendChild(arr);
+  });
 }
 
-function conn(x1,y1,x2,y2,color,dash,svg){
-  svg.appendChild(mkPath(x1,y1,x2,y2,color,dash));
-  svg.appendChild(mkArrow(x2,y2,color));
-}
-
-function drawConns(items,svg){
-  function byId(id){return items.find(i=>i.step&&i.step.id===id);}
-
-  let prev=null; // last main-row item
-
-  wf.forEach((item,wi)=>{
-    if(item.parallel){
-      const gItems=items.filter(i=>i.parItem===item);
-      // from prev to each par node
-      if(prev) gItems.forEach(gi=>conn(prev.cx+NW/2,prev.cy, gi.cx-NW/2,gi.cy,'rgba(0,0,0,.18)',false,svg));
-      // from each par to next main
-      const nextMain=wf.slice(wi+1).find(s=>!s.parallel);
-      if(nextMain){
-        const np=byId(nextMain.id);
-        if(np) gItems.forEach(gi=>conn(gi.cx+NW/2,gi.cy, np.cx-NW/2,np.cy,'rgba(0,0,0,.18)',false,svg));
-      }
-      prev=null;
-    } else if(item.approval==='threshold'){
-      const tp=byId(item.id);
-      if(prev&&tp) conn(prev.cx+NW/2,prev.cy, tp.cx-NW/2,tp.cy,'rgba(0,0,0,.18)',false,svg);
-      const hi=byId(item.hiStep&&item.hiStep.id);
-      const lo=byId(item.loStep&&item.loStep.id);
-      // hi branch — purple, goes up
-      if(tp&&hi){
-        conn(tp.cx+NW/2,tp.cy, hi.cx-NW/2,hi.cy,'#7C5CFC',false,svg);
-        // pill label at midpoint
-        const mx=(tp.cx+NW/2+hi.cx-NW/2)/2;
-        const my=(tp.cy+hi.cy)/2;
-        svg.appendChild(mkPillLabel(mx,my,'ABOVE £'+(item.threshold||10000).toLocaleString(),'#fff','#7C5CFC'));
-      }
-      // lo branch — green, goes down
-      if(tp&&lo){
-        conn(tp.cx+NW/2,tp.cy, lo.cx-NW/2,lo.cy,'#16A34A',false,svg);
-        const mx=(tp.cx+NW/2+lo.cx-NW/2)/2;
-        const my=(tp.cy+lo.cy)/2;
-        svg.appendChild(mkPillLabel(mx,my,'BELOW → AUTO','#fff','#16A34A'));
-      }
-      // both branches re-converge to next step
-      const nextMain=wf.slice(wi+1).find(s=>!s.parallel&&s.approval!=='threshold');
-      if(nextMain){
-        const np=byId(nextMain.id);
-        if(np&&hi) conn(hi.cx+NW/2,hi.cy, np.cx-NW/2,np.cy,'#7C5CFC',true,svg);
-        if(np&&lo) conn(lo.cx+NW/2,lo.cy, np.cx-NW/2,np.cy,'#16A34A',true,svg);
-      }
-      prev=null;
-    } else {
-      const p=byId(item.id);
-      if(prev&&p) conn(prev.cx+NW/2,prev.cy, p.cx-NW/2,p.cy,'rgba(0,0,0,.18)',false,svg);
-      prev=p;
+function drawAddBtns(){
+  conns.forEach((c,ci)=>{
+    const fn=nodes.find(n=>n.id===c.from),tn=nodes.find(n=>n.id===c.to);
+    if(!fn||!tn)return;
+    const ax=fn.x+NW/2,ay=fn.y+NH/2,bx=tn.x,by=tn.y+NH/2;
+    const mx=(ax+bx)/2,my=(ay+by)/2;
+    // Branch label — appended first so + button renders on top
+    if(c.label){
+      const lbl=document.createElement('div');lbl.className='blbl';
+      const lx2=ax+(mx-ax)*0.38,ly2=ay+(my-ay)*0.38;
+      lbl.style.cssText=`left:${lx2}px;top:${ly2}px`;
+      const span=document.createElement('span');
+      span.style.cssText=`border-color:${c.color||'rgba(255,255,255,.3)'};color:${c.color||'rgba(255,255,255,.6)'}`;
+      span.textContent=c.label;lbl.appendChild(span);cinner.appendChild(lbl);
     }
+    // Add button — appended after labels so it sits on top in DOM
+    const btn=document.createElement('div');btn.className='add-btn';
+    btn.style.cssText=`left:${mx}px;top:${my}px`;
+    btn.innerHTML=`<svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="rgba(255,255,255,.45)" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+    btn.addEventListener('mousedown',e=>e.stopPropagation());
+    btn.addEventListener('dragover',e=>{e.preventDefault();btn.classList.add('over');});
+    btn.addEventListener('dragleave',()=>btn.classList.remove('over'));
+    btn.addEventListener('drop',e=>{e.preventDefault();btn.classList.remove('over');if(dragTypeId){insertOnConn(dragTypeId,ci);dragTypeId=null;}});
+    btn.addEventListener('click',e=>{e.stopPropagation();showQQ(ci,btn);});
+    cinner.appendChild(btn);
   });
 }
 
-// ── PARALLEL BRACKETS ──
-function drawParBrackets(items){
-  const groups=new Map();
-  items.filter(i=>i.kind==='par').forEach(i=>{
-    if(!groups.has(i.parItem))groups.set(i.parItem,[]);
-    groups.get(i.parItem).push(i);
-  });
-  groups.forEach((ps)=>{
-    if(!ps.length)return;
-    const minY=Math.min(...ps.map(p=>p.cy))-NH/2-10;
-    const maxY=Math.max(...ps.map(p=>p.cy))+NH/2+10;
-    const x=ps[0].cx-NW/2-10;
-    const w=NW+20;
-    const br=document.createElement('div');br.className='par-bracket';
-    br.style.cssText=`left:${x}px;top:${minY}px;width:${w}px;height:${maxY-minY}px`;
-    const lbl=document.createElement('div');lbl.className='par-lbl';lbl.textContent='Parallel review — approval orchestration';
-    br.appendChild(lbl);cinner.appendChild(br);
-  });
+/* UPDATE SINGLE NODE POSITION (during drag, no full re-render) */
+function positionNode(node){
+  const wrap=cinner.querySelector(`.nw[data-id="${node.id}"]`);
+  if(wrap){wrap.style.left=node.x+'px';wrap.style.top=node.y+'px';}
 }
 
-// ── PLACE NODE ──
-function placeNode(p){
-  const step=p.step;if(!step||!step.type)return;
-  const t=TT(step.type);const isSel=sel&&sel.id===step.id;
-  const wrap=document.createElement('div');
-  wrap.className='node-wrap';
-  wrap.style.cssText=`left:${p.cx-NW/2}px;top:${p.cy-NH/2-22}px`;
+/* PLACE NODE */
+function placeNode(node){
+  const t=TT(node.type);const isSel=sel&&sel.id===node.id;
+  const wrap=document.createElement('div');wrap.className='nw';wrap.setAttribute('data-id',node.id);
+  wrap.style.cssText=`left:${node.x}px;top:${node.y}px;width:${NW}px`;
 
-  const lbl=document.createElement('div');lbl.className='ctx-lbl';
-  if(p.kind==='hi'){lbl.textContent='Above threshold → CFO';lbl.style.color='#7C5CFC';}
-  else if(p.kind==='lo'){lbl.textContent='Below threshold → auto';lbl.style.color='#16A34A';}
-  else lbl.textContent=t.sl||'';
-  wrap.appendChild(lbl);
+  const el=document.createElement('div');
+  el.className='node'+(isSel?' sel':'')+(node.done?' done':'');
 
-  const node=document.createElement('div');
-  node.className='node'+(isSel?' sel':'')+(step.done?' done':'')+(step.shadow?' risky':'');
-  node.addEventListener('mousedown',e=>e.stopPropagation());
-  node.addEventListener('click',e=>{if(!didPan){e.stopPropagation();selectStep(step);}});
-
-  const badges=[];
-  if(step.approval==='threshold')badges.push(`<span class="nbadge thresh">£${(step.threshold||0).toLocaleString()} threshold</span>`);
-  if(step.infosec)badges.push('<span class="nbadge tprm">TPRM</span>');
-  if(step.soc2)badges.push('<span class="nbadge soc">SOC 2</span>');
-  if(step.shadow)badges.push('<span class="nbadge shadow">Shadow AI</span>');
-  if(t.bench)badges.push(`<span class="nbadge bench">${t.bench} saving</span>`);
-
-  node.innerHTML=`
-    <div class="ndel" onclick="event.stopPropagation();removeStep('${step.id}')">&#x2715;</div>
-    <div class="ntop">
-      <div class="nico" style="background:${step.done?'#DCFCE7':t.bg}">
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="${t.icon}" stroke="${step.done?'#16A34A':t.c}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="ntitle">${step.label}</div>
-      ${step.done?`<div class="ncheck"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`:''}
+  el.innerHTML=`
+    <div class="ntitle">${node.label}</div>
+    <div class="nmeta">
+      <span class="tag ${node.approval==='threshold'?'thresh':node.approval==='auto'?'auto':'human'}">${node.approval==='threshold'?'Threshold':node.approval==='auto'?'AI auto':'Human'}</span>
+      <span class="dur">~${node.dur}d · ${node.assignee}</span>
     </div>
-    <div class="nasgn">
-      <div class="nav"><svg viewBox="0 0 9 9" fill="none"><circle cx="4.5" cy="3" r="1.5" stroke="rgba(0,0,0,.25)" stroke-width="1"/><path d="M1.5 8c0-1.657 1.343-2.5 3-2.5s3 .843 3 2.5" stroke="rgba(0,0,0,.25)" stroke-width="1" stroke-linecap="round"/></svg></div>
-      <span class="naname">${step.assignee}</span>
-    </div>
-    <div class="nbar"><div class="nbarfill" style="width:${step.progress||0}%"></div></div>
-    ${badges.length?`<div class="nbadges">${badges.join('')}</div>`:''}
-    ${!step.done?`<div class="nacts"><button class="nbtn" onclick="event.stopPropagation();showToast('Task reassigned')">Reassign</button><button class="nbtn ok" onclick="event.stopPropagation();approveStep('${step.id}')">Approve</button></div>`:''}`;
-  wrap.appendChild(node);
+    <div class="nstatus ${node.done?'ok':''}">
+      ${node.done
+        ?'<svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7l3.5 3.5 5.5-6" stroke="#22C55E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        :'<svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="4" stroke="rgba(124,92,252,.45)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>'}
+    </div>`;
 
-  const pill=document.createElement('div');
-  pill.className=`pill ${step.done?t.pc:'gray'}`;
-  if(step.done)pill.innerHTML=`<svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>${t.pill}`;
-  else pill.textContent=t.pill;
-  wrap.appendChild(pill);
+  el.addEventListener('mousedown',e=>{
+    e.stopPropagation();
+    const rect=wrap.getBoundingClientRect();
+    dragNodeId=node.id;dragMoved=false;
+    dragOx=(e.clientX-rect.left);dragOy=(e.clientY-rect.top);
+  });
+  // click handled on mouseup via dragMoved flag
+
+  const del=document.createElement('div');del.className='ndel';del.textContent='✕';
+  del.addEventListener('mousedown',e=>e.stopPropagation());
+  del.onclick=e=>{e.stopPropagation();removeNode(node.id);};
+  wrap.appendChild(el);wrap.appendChild(del);
   cinner.appendChild(wrap);
 }
 
-// ── ADD BUTTONS ──
-function drawAddBtns(items){
-  const mainSeq=[];
-  wf.forEach(item=>{
-    if(item.parallel||item.approval==='threshold')return;
-    const p=items.find(i=>i.step&&i.step.id===item.id&&i.kind==='main');
-    if(p)mainSeq.push(p);
-  });
-  mainSeq.forEach((p,i)=>{
-    mkAddBtn(p.cx-NW/2-COL/2,p.cy,i);
-  });
-  if(mainSeq.length){
-    const last=mainSeq[mainSeq.length-1];
-    mkAddBtn(last.cx+NW/2+COL/2,last.cy,mainSeq.length);
-  }
-}
-function mkAddBtn(ax,ay,idx){
-  const btn=document.createElement('div');btn.className='add-btn';
-  btn.style.cssText=`left:${ax}px;top:${ay}px`;
-  btn.innerHTML=`<svg viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/></svg>`;
-  btn.addEventListener('mousedown',e=>e.stopPropagation());
-  btn.addEventListener('dragover',e=>{e.preventDefault();btn.classList.add('dragover');});
-  btn.addEventListener('dragleave',()=>btn.classList.remove('dragover'));
-  btn.addEventListener('drop',e=>{e.preventDefault();btn.classList.remove('dragover');if(dragTypeId){addStepAt(dragTypeId,idx);dragTypeId=null;}});
-  btn.addEventListener('click',e=>{e.stopPropagation();showQQ(idx,btn);});
-  cinner.appendChild(btn);
-}
-
-// ── QUICK ADD ──
+/* QUICK ADD */
 let qqEl=null;
-function showQQ(idx,anchor){
+function showQQ(connIdx,anchor){
   closeQQ();
-  const popup=document.createElement('div');
-  popup.style.cssText='position:absolute;background:#fff;border:.5px solid rgba(0,0,0,.14);border-radius:10px;padding:6px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:180px;max-height:380px;overflow-y:auto';
+  const popup=document.createElement('div');popup.className='qq';
   const r=anchor.getBoundingClientRect(),cR=cwrap.getBoundingClientRect();
   popup.style.left=((r.left+r.width/2-cR.left-px)/scale)+'px';
   popup.style.top=((r.bottom+6-cR.top-py)/scale)+'px';
   popup.style.transform='translateX(-50%)';
-  PILLARS.forEach(pillar=>{
-    const ph=document.createElement('div');ph.style.cssText='font-size:9px;font-weight:600;color:#94A3B8;letter-spacing:.1em;text-transform:uppercase;padding:6px 8px 3px';ph.textContent=pillar.label;popup.appendChild(ph);
-    pillar.steps.forEach(t=>{
-      const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;transition:background .1s';
-      row.innerHTML=`<div style="width:20px;height:20px;border-radius:4px;background:${t.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="${t.icon}" stroke="${t.c}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:11.5px;color:#18152E;font-weight:500">${t.label}</span>`;
-      row.onmouseenter=()=>row.style.background='#F7F6FF';row.onmouseleave=()=>row.style.background='';
-      row.onclick=e=>{e.stopPropagation();addStepAt(t.id,idx);closeQQ();};
+  PILLARS.forEach(pl=>{
+    const ph=document.createElement('div');ph.className='qqsec';ph.textContent=pl.label;popup.appendChild(ph);
+    pl.steps.forEach(t=>{
+      const row=document.createElement('div');row.className='qqitem';
+      row.innerHTML=`<div class="qqico" style="background:${t.bg}"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="${t.icon}" stroke="${t.c}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="qqname">${t.name}</span>`;
+      row.onclick=e=>{e.stopPropagation();insertOnConn(t.id,connIdx);closeQQ();};
       popup.appendChild(row);
     });
   });
@@ -525,87 +453,106 @@ function showQQ(idx,anchor){
 }
 function closeQQ(){if(qqEl){qqEl.remove();qqEl=null;}}
 
-// ── STEP OPS ──
-function addStepAt(typeId,insertIdx){
-  const t=TT(typeId);
-  wf.splice(insertIdx,0,{id:'n'+Date.now(),type:typeId,label:t.label,assignee:'Vertice AI',dur:2,approval:'auto',slack:true,escalate:false,infosec:t.id==='infosec'||t.id==='tprm',soc2:t.id==='tprm',shadow:false,done:false,progress:0,threshold:10000});
-  render();showToast(`"${t.label}" added`);
-}
-function removeStep(id){
-  wf=wf.filter(s=>s.id!==id);
-  wf.forEach(s=>{if(s.parallel)s.steps=s.steps.filter(p=>p.id!==id);});
-  wf=wf.filter(s=>!s.parallel||s.steps.length>0);
-  if(sel&&sel.id===id)deselect();else render();showToast('Step removed');
-}
-function approveStep(id){const s=findStep(id);if(s){s.done=true;s.progress=100;}render();showToast('Step approved');}
-function findStep(id){
-  for(const s of wf){if(s.id===id)return s;if(s.parallel)for(const p of s.steps)if(p.id===id)return p;if(s.hiStep&&s.hiStep.id===id)return s.hiStep;if(s.loStep&&s.loStep.id===id)return s.loStep;}return null;
+function insertOnConn(typeId,ci){
+  const c=conns[ci];if(!c)return;
+  const fn=nodes.find(n=>n.id===c.from),tn=nodes.find(n=>n.id===c.to);
+  if(!fn||!tn)return;
+  const nx=(fn.x+tn.x)/2,ny=(fn.y+tn.y)/2;
+  const newN=mkStep(typeId,nx,ny);
+  nodes.push(newN);
+  conns.splice(ci,1,{from:c.from,to:newN.id,label:c.label,color:c.color},{from:newN.id,to:c.to});
+  render();showToast(`"${TT(typeId).name}" added`);
 }
 
-// ── SELECT ──
-function selectStep(step){
-  sel=step;
+/* NODE OPS */
+function removeNode(id){
+  nodes=nodes.filter(n=>n.id!==id);
+  conns=conns.filter(c=>c.from!==id&&c.to!==id);
+  if(sel&&sel.id===id)deselect();else render();showToast('Step removed');
+}
+function approveSelStep(){if(!sel)return;sel.done=true;render();selectNode(sel);showToast('Step approved');}
+function deleteSelStep(){if(sel)removeNode(sel.id);}
+
+/* SELECT */
+function selectNode(node){
+  if(!node)return;sel=node;
   document.getElementById('ie').style.display='none';document.getElementById('ip').style.display='block';
-  document.getElementById('iht').textContent=step.label;
-  document.getElementById('in-name').value=step.label;
-  document.getElementById('in-asgn').value=step.assignee||'Vertice AI';
-  document.getElementById('in-dur').value=step.dur||2;
-  document.getElementById('in-appr').value=step.approval||'human';
-  document.getElementById('tog-sl').checked=step.slack!==false;
-  document.getElementById('tog-es').checked=!!step.escalate;
-  document.getElementById('tog-is').checked=!!step.infosec;
-  document.getElementById('tog-soc').checked=!!step.soc2;
-  document.getElementById('tog-shadow').checked=!!step.shadow;
-  document.getElementById('thresh-ui').style.display=step.approval==='threshold'?'flex':'none';
-  document.getElementById('in-thresh').value=step.threshold||10000;
-  const t=TT(step.type);
+  document.getElementById('iht').textContent=node.label;
+  document.getElementById('in-name').value=node.label;
+  document.getElementById('in-asgn').value=node.assignee||'Vertice AI';
+  document.getElementById('in-dur').value=node.dur||2;
+  document.getElementById('in-appr').value=node.approval||'human';
+  document.getElementById('tog-sl').checked=node.slack!==false;
+  document.getElementById('tog-es').checked=!!node.escalate;
+  document.getElementById('tog-is').checked=!!node.infosec;
+  document.getElementById('tog-soc').checked=!!node.soc2;
+  document.getElementById('tog-shadow').checked=!!node.shadow;
+  document.getElementById('thresh-ui').style.display=node.approval==='threshold'?'block':'none';
+  document.getElementById('in-thresh').value=node.threshold||10000;
+  const t=TT(node.type);
   document.getElementById('bench-ui').style.display=t.bench?'block':'none';
-  if(t.bench)document.getElementById('bench-val').textContent=t.bench;
-  document.getElementById('risk-ui').style.display=step.shadow?'block':'none';
   render();
 }
 function deselect(){sel=null;document.getElementById('ie').style.display='block';document.getElementById('ip').style.display='none';render();}
 function upd(field,val){
   if(!sel)return;sel[field]=val;
   if(field==='label')document.getElementById('iht').textContent=val;
-  if(field==='shadow')document.getElementById('risk-ui').style.display=val?'block':'none';
-  render();selectStep(sel);
+  if(field==='threshold'){
+    conns.forEach(c=>{
+      if(c.from===sel.id&&c.label){
+        if(c.label.startsWith('Above'))c.label='Above £'+val.toLocaleString();
+        if(c.label.startsWith('Below'))c.label='Below £'+val.toLocaleString();
+      }
+    });
+  }
+  render();selectNode(sel);
 }
 function updApproval(val){
   if(!sel)return;sel.approval=val;
-  document.getElementById('thresh-ui').style.display=val==='threshold'?'flex':'none';
-  if(val==='threshold'&&!sel.hiStep){
-    sel.hiStep={id:'h'+Date.now(),type:'exec',  label:'CFO sign-off', assignee:'CFO',       dur:1,approval:'human',slack:true,escalate:true, infosec:false,soc2:false,shadow:false,done:false,progress:0,threshold:0};
-    sel.loStep={id:'l'+Date.now(),type:'notify',label:'Auto-approved',assignee:'Vertice AI',dur:1,approval:'auto', slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:0,threshold:0};
+  document.getElementById('thresh-ui').style.display=val==='threshold'?'block':'none';
+  if(val==='threshold'&&!conns.find(c=>c.from===sel.id&&c.label)){
+    const hi=mkStep('exec',sel.x+NW+80,sel.y-140,{label:'CFO sign-off',assignee:'CFO',dur:1,approval:'human'});
+    const lo=mkStep('notify',sel.x+NW+80,sel.y+90,{label:'Auto-approved',assignee:'Vertice AI',dur:1,approval:'auto'});
+    nodes.push(hi,lo);
+    conns.push({from:sel.id,to:hi.id,label:'Above £10k',color:'#9B7FFF'});
+    conns.push({from:sel.id,to:lo.id,label:'Below £10k',color:'#4ADE80'});
   }
-  render();selectStep(sel);
+  render();selectNode(sel);
 }
 
-// ── METRICS ──
-function updateMetrics(items){
-  let steps=0,par=0,days=0;
-  wf.forEach(s=>{if(s.parallel){par+=s.steps.length;steps+=s.steps.length;days+=Math.max(...s.steps.map(p=>p.dur||2));}else{steps++;days+=s.dur||1;if(s.hiStep)steps+=2;}});
-  document.getElementById('m-steps').textContent=steps;document.getElementById('m-par').textContent=par;document.getElementById('m-cycle').textContent=`~${days} days`;
-}
+/* CYCLE BAR */
 function renderCycleBar(){
-  const cols=['#7C5CFC','#7C5CFC','#D97706','#D97706','#16A34A','#16A34A','#7C5CFC'];
-  const segs=wf.map((s,i)=>({d:s.parallel?Math.max(...s.steps.map(p=>p.dur||2)):s.dur||1,c:cols[Math.min(i,cols.length-1)]}));
-  const total=segs.reduce((a,s)=>a+s.d,0);
-  document.getElementById('cb-track').innerHTML=segs.map(s=>`<div class="cb-seg" style="flex:${s.d};background:${s.c}"></div>`).join('');
-  document.getElementById('cb-new').textContent=`~${total} days`;
-  document.getElementById('cb-save').textContent=Math.round((1-total/42)*100)+'% faster';
+  const total=nodes.reduce((s,n)=>s+(n.dur||1),0);
+  const cols=['#7C5CFC','#7C5CFC','#F59E0B','#22C55E','#9B7FFF'];
+  document.getElementById('cytrack').innerHTML=nodes.slice(0,5).map((n,i)=>`<div class="cyseg" style="flex:${n.dur||1};background:${cols[i%cols.length]}"></div>`).join('');
+  document.getElementById('cynew').textContent=`~${total} days`;
+  document.getElementById('cysave').textContent=Math.max(0,Math.round((1-total/42)*100))+'% faster';
 }
 
-// ── PALETTE ──
+/* PALETTE */
 function buildPalette(){
-  document.getElementById('palette').innerHTML=PILLARS.map(p=>`<div class="sbpillar">${p.label}</div>${p.steps.map(t=>`<div class="sbi" draggable="true" ondragstart="dragTypeId='${t.id}'" ondragend="dragTypeId=null"><div class="sbico" style="background:${t.bg}"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="${t.icon}" stroke="${t.c}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="sbname">${t.label}</span></div>`).join('')}`).join('');
+  document.getElementById('palette').innerHTML=PILLARS.map(p=>`
+    <div class="sbsec">${p.label}</div>
+    ${p.steps.map(t=>`
+      <div class="sbi" draggable="true" ondragstart="dragTypeId='${t.id}'" ondragend="dragTypeId=null">
+        <div class="sbico" style="background:${t.bg}"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="${t.icon}" stroke="${t.c}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="sbname">${t.name}</span>
+      </div>`).join('')}`).join('');
 }
 
-cwrap.addEventListener('click',e=>{if(didPan)return;if(e.target===cwrap||e.target===cinner)deselect();});
 cwrap.addEventListener('dragover',e=>e.preventDefault());
-cwrap.addEventListener('drop',e=>{e.preventDefault();if(dragTypeId){addStepAt(dragTypeId,wf.length);dragTypeId=null;}});
+cwrap.addEventListener('drop',e=>{
+  e.preventDefault();if(!dragTypeId)return;
+  const r=cwrap.getBoundingClientRect();
+  const x=(e.clientX-r.left-px)/scale-NW/2;
+  const y=(e.clientY-r.top-py)/scale-NH/2;
+  nodes.push(mkStep(dragTypeId,x,y));dragTypeId=null;
+  render();showToast('Step added — connect it using the + on any connector');
+});
+cwrap.addEventListener('click',e=>{if(didPan)return;if(e.target===cwrap||e.target===cinner)deselect();});
+
 function resetWF(){if(confirm('Reset workflow?'))location.reload();}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
 
 buildPalette();render();applyT();
 </script>
