@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vertice — Workflow Builder</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#7C5CFC;--p2:#6B4EFF;--pl:#F0EDFF;--pb:rgba(124,92,252,.3);
+  --g:#16A34A;--gl:#F0FDF4;--gb:rgba(22,163,74,.25);
+  --r:#DC2626;--rl:#FEF2F2;
+  --a:#D97706;--al:#FFFBEB;
+  --canvas:#EEEDF4;
+  --card:#FFFFFF;--card2:#F7F6FF;
+  --bdr:rgba(0,0,0,.09);--bdr2:rgba(0,0,0,.14);
+  --txt:#18152E;--txt2:#64748B;--txt3:#94A3B8;
+  --conn:rgba(0,0,0,.18);
+}
+html,body{height:100%;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--canvas);color:var(--txt);font-size:14px}
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{height:52px;background:#fff;border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;z-index:20}
+.logo{display:flex;align-items:center;gap:7px}
+.lv{width:24px;height:24px;background:var(--p);border-radius:5px;display:flex;align-items:center;justify-content:center}
+.lv svg{width:12px;height:12px}
+.ln{font-size:14px;font-weight:600;color:var(--txt)}
+.tdiv{width:1px;height:20px;background:var(--bdr);margin:0 2px}
+.lsub{font-size:13px;color:var(--txt3)}
+.wlbl{font-size:12px;color:var(--txt2);padding:3px 8px;border-radius:5px;border:.5px solid transparent;cursor:text;outline:none}
+.wlbl:focus{border-color:var(--pb);background:var(--pl)}
+.badge{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;border:.5px solid var(--pb);color:var(--p);background:var(--pl)}
+.tsp{flex:1}
+.tbtn{font-size:12px;font-weight:500;padding:5px 12px;border-radius:7px;border:.5px solid var(--bdr2);background:transparent;color:var(--txt2);cursor:pointer;transition:all .12s}
+.tbtn:hover{background:var(--card2);color:var(--txt)}
+.tbtn.go{background:var(--p);border-color:var(--p);color:#fff}
+.tbtn.go:hover{background:var(--p2)}
+.zoom-ctrl{display:flex;align-items:center;background:var(--card2);border:.5px solid var(--bdr2);border-radius:7px;overflow:hidden}
+.zbtn{width:28px;height:28px;border:none;background:transparent;color:var(--txt2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.zbtn:hover{background:var(--pl);color:var(--p)}
+.zval{font-size:11px;font-weight:500;color:var(--txt2);padding:0 8px;border-left:.5px solid var(--bdr);border-right:.5px solid var(--bdr);min-width:44px;text-align:center}
+.body{display:flex;flex:1;overflow:hidden}
+.sidebar{width:212px;background:#fff;border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;z-index:5}
+.sbsec{padding:12px 14px 4px;font-size:9px;font-weight:600;color:var(--txt3);letter-spacing:.12em;text-transform:uppercase}
+.sbpillar{padding:8px 14px 3px;font-size:10px;font-weight:600;color:var(--txt2)}
+.sblist{padding:0 8px;display:flex;flex-direction:column;gap:2px;flex:1;overflow-y:auto;padding-bottom:12px}
+.sbi{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:7px;border:.5px solid transparent;cursor:grab;user-select:none;transition:all .12s}
+.sbi:hover{background:var(--card2);border-color:var(--bdr2)}
+.sbi:active{cursor:grabbing}
+.sbico{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sbico svg{width:11px;height:11px}
+.sbname{font-size:11px;font-weight:500;color:var(--txt2)}
+.sbfoot{padding:10px 12px;border-top:1px solid var(--bdr);flex-shrink:0}
+.sbstat{display:flex;justify-content:space-between;padding:3px 0;font-size:11px}
+.sbk{color:var(--txt3)}.sbv{font-weight:600;color:var(--txt2)}.sbv.g{color:var(--g)}
+.cwrap{flex:1;overflow:hidden;position:relative;cursor:grab;background:var(--canvas);background-image:radial-gradient(circle,rgba(0,0,0,.07) 1px,transparent 1px);background-size:24px 24px}
+.cwrap.panning{cursor:grabbing}
+.cinner{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}
+.conn-svg{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
+.node-wrap{position:absolute;display:flex;flex-direction:column;align-items:center}
+.ctx-lbl{font-size:9.5px;color:var(--txt3);margin-bottom:6px;white-space:nowrap;font-style:italic;text-align:center}
+.node{width:168px;background:var(--card);border:1px solid var(--bdr2);border-radius:10px;padding:10px 12px;cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s;user-select:none}
+.node:hover{border-color:var(--pb);box-shadow:0 0 0 1px var(--pb),0 4px 14px rgba(124,92,252,.09)}
+.node.sel{border-color:var(--p);box-shadow:0 0 0 2.5px rgba(124,92,252,.18)}
+.node.done{border-color:var(--gb);background:var(--gl)}
+.node.risky{border-color:rgba(220,38,38,.35)}
+.ntop{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.nico{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nico svg{width:11px;height:11px}
+.ntitle{font-size:12px;font-weight:600;color:var(--txt);line-height:1.3;flex:1}
+.ncheck{width:15px;height:15px;border-radius:50%;background:var(--gl);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ncheck svg{width:8px;height:8px}
+.nasgn{display:flex;align-items:center;gap:5px;margin-bottom:5px}
+.nav{width:13px;height:13px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav svg{width:8px;height:8px}
+.naname{font-size:10px;color:var(--txt3)}
+.nbar{height:2.5px;border-radius:2px;background:var(--card2);overflow:hidden;margin-top:2px}
+.nbarfill{height:100%;border-radius:2px;background:var(--p);transition:width .3s}
+.node.done .nbarfill{background:var(--g)}
+.nacts{display:flex;gap:5px;margin-top:7px}
+.nbtn{flex:1;font-size:10px;font-weight:500;padding:4px 0;border-radius:5px;border:.5px solid var(--bdr2);background:transparent;color:var(--txt2);cursor:pointer;transition:all .12s;text-align:center}
+.nbtn:hover{background:var(--card2);color:var(--txt)}
+.nbtn.ok{background:var(--p);border-color:var(--p);color:#fff}
+.nbtn.ok:hover{background:var(--p2)}
+.ndel{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:#fff;border:.5px solid var(--bdr2);color:var(--txt3);font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .12s;z-index:10}
+.node:hover .ndel{opacity:1}
+.ndel:hover{background:#FEE2E2;border-color:#FCA5A5;color:#B91C1C}
+.nbadges{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.nbadge{font-size:9px;font-weight:600;padding:2px 6px;border-radius:20px}
+.nbadge.tprm{background:#FEF2F2;color:#B91C1C;border:.5px solid #FECACA}
+.nbadge.soc{background:#FEF2F2;color:#9B1C1C;border:.5px solid #FECACA}
+.nbadge.shadow{background:#FFF7ED;color:#C2410C;border:.5px solid #FED7AA}
+.nbadge.bench{background:#F0FDF4;color:#15803D;border:.5px solid #BBF7D0}
+.nbadge.thresh{background:#EFF6FF;color:#1D4ED8;border:.5px solid #BFDBFE}
+.pill{margin-top:7px;height:23px;padding:0 9px;border-radius:20px;display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;cursor:default;white-space:nowrap}
+.pill svg{width:9px;height:9px;flex-shrink:0}
+.pill.purple{background:var(--p);color:#fff}
+.pill.green{background:var(--g);color:#fff}
+.pill.amber{background:var(--a);color:#fff}
+.pill.gray{background:rgba(0,0,0,.08);color:var(--txt2)}
+.add-btn{position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;border:1.5px solid var(--conn);display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);transition:border-color .12s,background .12s,transform .12s;z-index:6}
+.add-btn:hover{border-color:var(--p);background:var(--pl);transform:translate(-50%,-50%) scale(1.18)}
+.add-btn.dragover{border-color:var(--p);background:var(--pl);transform:translate(-50%,-50%) scale(1.22)}
+.add-btn svg{width:9px;height:9px;pointer-events:none}
+.par-bracket{position:absolute;background:rgba(124,92,252,.03);border:1px solid rgba(124,92,252,.2);border-radius:12px;pointer-events:none}
+.par-lbl{position:absolute;top:-10px;left:12px;font-size:9px;font-weight:600;color:var(--p);letter-spacing:.1em;text-transform:uppercase;background:var(--canvas);padding:0 6px;pointer-events:none;white-space:nowrap}
+.inspector{width:256px;background:#fff;border-left:1px solid var(--bdr);overflow-y:auto;flex-shrink:0;z-index:5}
+.ih{padding:14px 14px 10px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.iht{font-size:12px;font-weight:600;color:var(--txt)}
+.ix{width:18px;height:18px;border-radius:4px;border:none;background:transparent;color:var(--txt3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.ix:hover{background:var(--card2);color:var(--txt)}
+.ib{padding:12px 14px;display:flex;flex-direction:column;gap:11px}
+.isec{font-size:9.5px;font-weight:600;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;padding-bottom:5px;border-bottom:.5px solid var(--bdr)}
+.ifield{display:flex;flex-direction:column;gap:4px}
+.ilbl{font-size:10.5px;color:var(--txt3)}
+.iin{width:100%;background:var(--card);border:.5px solid var(--bdr2);border-radius:6px;padding:6px 9px;font-size:12px;color:var(--txt);outline:none}
+.iin:focus{border-color:var(--pb)}
+.isel{width:100%;background:var(--card);border:.5px solid var(--bdr2);border-radius:6px;padding:6px 9px;font-size:12px;color:var(--txt);outline:none;cursor:pointer}
+.isel:focus{border-color:var(--pb)}
+.trow{display:flex;align-items:center;justify-content:space-between}
+.tlbl{font-size:11.5px;color:var(--txt2)}
+.tog{position:relative;width:30px;height:17px}
+.tog input{opacity:0;width:0;height:0;position:absolute}
+.tsl{position:absolute;inset:0;background:var(--bdr2);border-radius:17px;cursor:pointer;transition:background .2s}
+.tsl::after{content:'';position:absolute;left:2.5px;top:2.5px;width:12px;height:12px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.tog input:checked+.tsl{background:var(--p)}
+.tog input:checked+.tsl::after{transform:translateX(13px)}
+.thresh-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+.tin{flex:1;padding:5px 8px;border:.5px solid var(--bdr2);border-radius:6px;font-size:11.5px;color:var(--txt);outline:none;background:var(--card)}
+.tin:focus{border-color:var(--pb)}
+.bench-box{background:#F0FDF4;border:.5px solid #BBF7D0;border-radius:7px;padding:8px 10px}
+.bench-val{font-size:18px;font-weight:600;color:var(--g)}
+.bench-sub{font-size:9.5px;color:#15803D;margin-top:2px;line-height:1.4}
+.risk-box{background:#FEF2F2;border:.5px solid #FECACA;border-radius:7px;padding:8px 10px}
+.risk-val{font-size:11px;font-weight:600;color:var(--r)}
+.risk-sub{font-size:9.5px;color:#B91C1C;margin-top:2px;line-height:1.4}
+.iempty{padding:3rem 1rem;text-align:center;color:var(--txt3);font-size:12px;line-height:1.6}
+.cycle-bar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:#fff;border:.5px solid var(--bdr2);border-radius:10px;padding:9px 16px;display:flex;align-items:center;gap:14px;z-index:10;box-shadow:0 4px 16px rgba(0,0,0,.08);white-space:nowrap}
+.cb-title{font-size:11px;font-weight:600;color:var(--txt2)}
+.cb-track{display:flex;gap:2px;height:6px;width:180px;border-radius:3px;overflow:hidden}
+.cb-seg{height:100%}
+.cb-old{font-size:11px;color:var(--txt3);text-decoration:line-through}
+.cb-new{font-size:13px;font-weight:600;color:var(--g)}
+.cb-save{font-size:10px;font-weight:600;padding:2px 8px;background:var(--gl);color:var(--g);border-radius:20px}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--txt);color:#fff;font-size:12px;padding:9px 14px;border-radius:8px;border-left:2px solid var(--p);opacity:0;transform:translateY(6px);transition:all .18s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="topbar">
+  <div class="logo"><div class="lv"><svg viewBox="0 0 12 12" fill="none"><path d="M1.5 2.5L6 9.5L10.5 2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="ln">vertice</span></div>
+  <div class="tdiv"></div><span class="lsub">Workflow Builder</span><div class="tdiv"></div>
+  <span class="wlbl" contenteditable="true" id="wf-title">Acme Media Group — New Vendor Request</span>
+  <span class="badge">Draft</span>
+  <div class="tsp"></div>
+  <div class="zoom-ctrl"><button class="zbtn" onclick="zoom(-0.1)">&#8722;</button><span class="zval" id="zval">100%</span><button class="zbtn" onclick="zoom(0.1)">&#43;</button></div>
+  <button class="tbtn" onclick="fitView()">Fit</button>
+  <button class="tbtn" onclick="resetWF()">Reset</button>
+  <button class="tbtn go" onclick="showToast('Workflow published — reviewers notified via Slack.')">Publish</button>
+</div>
+<div class="body">
+<div class="sidebar">
+  <div class="sbsec">Step library — 8 I2P pillars</div>
+  <div class="sblist" id="palette"></div>
+  <div class="sbfoot">
+    <div class="sbsec" style="padding:0 0 6px">Metrics</div>
+    <div class="sbstat"><span class="sbk">Total steps</span><span class="sbv" id="m-steps">-</span></div>
+    <div class="sbstat"><span class="sbk">Parallel paths</span><span class="sbv" id="m-par">-</span></div>
+    <div class="sbstat"><span class="sbk">Cycle time</span><span class="sbv g" id="m-cycle">-</span></div>
+    <div class="sbstat"><span class="sbk">Sequential baseline</span><span class="sbv" style="text-decoration:line-through;color:var(--txt3)">42 days</span></div>
+  </div>
+</div>
+<div class="cwrap" id="cwrap">
+  <div class="cinner" id="cinner">
+    <svg class="conn-svg" id="conn-svg" width="5000" height="2000"></svg>
+  </div>
+  <div class="cycle-bar"><span class="cb-title">Cycle time</span><div class="cb-track" id="cb-track"></div><span class="cb-old">42 days</span><span style="color:var(--txt3)">→</span><span class="cb-new" id="cb-new">8 days</span><span class="cb-save" id="cb-save">81% faster</span></div>
+</div>
+<div class="inspector">
+  <div class="iempty" id="ie"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="margin:0 auto 10px;display:block"><rect x="4" y="4" width="20" height="20" rx="4" stroke="rgba(0,0,0,.15)" stroke-width="1.5"/><path d="M9 14h10M9 10h6M9 18h4" stroke="rgba(0,0,0,.15)" stroke-width="1.5" stroke-linecap="round"/></svg>Select a node to<br>configure it</div>
+  <div id="ip" style="display:none">
+    <div class="ih"><span class="iht" id="iht">Configure</span><button class="ix" onclick="deselect()">&#x2715;</button></div>
+    <div class="ib">
+      <div class="isec">Details</div>
+      <div class="ifield"><label class="ilbl">Step name</label><input class="iin" id="in-name" oninput="upd('label',this.value)"></div>
+      <div class="ifield"><label class="ilbl">Assignee</label><select class="isel" id="in-asgn" onchange="upd('assignee',this.value)"><option>Vertice AI</option><option>Procurement Lead</option><option>Head of IT</option><option>CFO</option><option>Legal team</option><option>Finance team</option></select></div>
+      <div class="ifield"><label class="ilbl">Duration</label><select class="isel" id="in-dur" onchange="upd('dur',+this.value)"><option value="1">~1 day</option><option value="2">~2 days</option><option value="3">~3 days</option><option value="5">~5 days</option><option value="7">~1 week</option><option value="13">~13 days</option></select></div>
+      <div class="isec" style="margin-top:2px">Approval &amp; routing</div>
+      <div class="ifield"><select class="isel" id="in-appr" onchange="updApproval(this.value)"><option value="auto">Automated (Vertice AI)</option><option value="human">Human approval</option><option value="threshold">Spend threshold branching</option></select></div>
+      <div id="thresh-ui" style="display:none;flex-direction:column;gap:6px">
+        <div class="thresh-row"><span class="ilbl" style="white-space:nowrap">Threshold (£)</span><input class="tin" id="in-thresh" type="number" value="10000" oninput="upd('threshold',+this.value)"></div>
+        <div style="font-size:9.5px;color:var(--txt3);line-height:1.5;padding:6px 8px;background:var(--pl);border-radius:6px"><strong style="color:var(--p)">Above threshold</strong> → CFO sign-off required<br><strong style="color:var(--g)">Below threshold</strong> → auto-approved, continues</div>
+      </div>
+      <div id="bench-ui" style="display:none"><div class="bench-box"><div class="bench-val" id="bench-val">20–45%</div><div class="bench-sub">Vertice benchmark saving for this category<br>Based on 32,000+ vendor contracts</div></div></div>
+      <div class="isec" style="margin-top:2px">Risk &amp; compliance</div>
+      <div class="trow"><span class="tlbl">Notify via Slack / Teams</span><label class="tog"><input type="checkbox" id="tog-sl" onchange="upd('slack',this.checked)" checked><span class="tsl"></span></label></div>
+      <div class="trow"><span class="tlbl">Auto-escalate (2 days)</span><label class="tog"><input type="checkbox" id="tog-es" onchange="upd('escalate',this.checked)"><span class="tsl"></span></label></div>
+      <div class="trow"><span class="tlbl">TPRM / InfoSec sign-off</span><label class="tog"><input type="checkbox" id="tog-is" onchange="upd('infosec',this.checked)"><span class="tsl"></span></label></div>
+      <div class="trow"><span class="tlbl">SOC 2 compliance check</span><label class="tog"><input type="checkbox" id="tog-soc" onchange="upd('soc2',this.checked)"><span class="tsl"></span></label></div>
+      <div class="trow"><span class="tlbl">Shadow AI risk flag</span><label class="tog"><input type="checkbox" id="tog-shadow" onchange="upd('shadow',this.checked)"><span class="tsl"></span></label></div>
+      <div id="risk-ui" style="display:none"><div class="risk-box"><div class="risk-val">Shadow AI risk detected</div><div class="risk-sub">71% of employees use unapproved AI. This step checks the vendor against your approved tool registry before proceeding.</div></div></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const PILLARS=[
+  {label:'Intake & forms',steps:[
+    {id:'intake',  label:'Intake form',      c:'#7C5CFC',bg:'#F0EDFF',icon:'M1.5 1.5h9v9h-9zM3.5 5.5h5M3.5 3.5h3',                                                   pill:'SUBMITTED',pc:'purple',bench:null,   sl:'1. Request submission'},
+    {id:'ai',      label:'AI triage',        c:'#7C5CFC',bg:'#F0EDFF',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4 6l2 2 3.5-4.5',                                         pill:'VALIDATED', pc:'purple',bench:null,   sl:'2. Automated triage'},
+  ]},
+  {label:'Approvals & workflows',steps:[
+    {id:'finance', label:'Finance approval', c:'#16A34A',bg:'#F0FDF4',icon:'M1.5 3.5h9v7h-9zM4 3.5v-1.5a2 2 0 014 0v1.5M3.5 6.5h5',                                 pill:'APPROVED', pc:'green', bench:null,   sl:'3. Approval orchestration'},
+    {id:'legal',   label:'Legal approval',   c:'#7C5CFC',bg:'#F0EDFF',icon:'M2.5 1h7a1 1 0 011 1v9a1 1 0 01-1 1h-7a1 1 0 01-1-1v-9a1 1 0 011-1zM3 4h6M3 6h6M3 8h4',pill:'APPROVED', pc:'green', bench:null,   sl:'3. Approval orchestration'},
+    {id:'exec',    label:'Exec sign-off',    c:'#D97706',bg:'#FFFBEB',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM6 3.5V6l2 1.5',                                           pill:'SIGNED',   pc:'amber', bench:null,   sl:'3. Approval orchestration'},
+  ]},
+  {label:'Risk management',steps:[
+    {id:'infosec', label:'Security review',  c:'#DC2626',bg:'#FEF2F2',icon:'M6 1L1 3.5v3c0 2.5 2 4 5 4.5 3-.5 5-2 5-4.5v-3zM4 6l2 2 3-3.5',                        pill:'CLEARED',  pc:'green', bench:null,   sl:'3. Approval orchestration'},
+    {id:'tprm',    label:'TPRM check',       c:'#DC2626',bg:'#FEF2F2',icon:'M9 2H3a1 1 0 00-1 1v7a1 1 0 001 1h6a1 1 0 001-1V3a1 1 0 00-1-1zM4 5.5h4M4 7.5h2',     pill:'CLEARED',  pc:'green', bench:null,   sl:'3. Approval orchestration'},
+  ]},
+  {label:'Vendor management',steps:[
+    {id:'procurement',label:'Commercial check',c:'#D97706',bg:'#FFFBEB',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4.5 6h3M6 4.5v3',                                      pill:'CHECKED',  pc:'amber', bench:null,   sl:'3. Approval orchestration'},
+    {id:'negotiate',label:'Negotiation',     c:'#16A34A',bg:'#F0FDF4',icon:'M1.5 9L6 2l4.5 7M3.5 7h5',                                                               pill:'AGREED',   pc:'green', bench:'20–45%',sl:'4. Sourcing & benchmarking'},
+  ]},
+  {label:'Integrations & execution',steps:[
+    {id:'approve', label:'Final approval',   c:'#16A34A',bg:'#F0FDF4',icon:'M6 1a5 5 0 110 10A5 5 0 016 1zM4 6l2 2 3.5-4',                                           pill:'APPROVED', pc:'green', bench:null,   sl:'5. Procurement execution'},
+    {id:'po',      label:'PO creation',      c:'#7C5CFC',bg:'#F0EDFF',icon:'M2.5 1.5h7l2 2v8a1 1 0 01-1 1h-8a1 1 0 01-1-1v-9a1 1 0 011-1zM4.5 5.5h5M4.5 7.5h3',   pill:'RAISED',   pc:'purple',bench:null,   sl:'5. Procurement execution'},
+    {id:'notify',  label:'Slack notification',c:'#7C5CFC',bg:'#F0EDFF',icon:'M1.5 2.5h9a1 1 0 011 1v6a1 1 0 01-1 1H2.5L1 12V3.5a1 1 0 011-1zM3.5 5.5h5M3.5 7.5h3',pill:'SENT',     pc:'purple',bench:null,   sl:'5. Procurement execution'},
+  ]},
+];
+const TYPES=PILLARS.flatMap(p=>p.steps);
+function TT(id){return TYPES.find(t=>t.id===id)||TYPES[0]}
+
+const NW=168,NH=128,COL=84,MAIN_Y=180,BRANCH_UP=MAIN_Y-170,BRANCH_DN=MAIN_Y+170,PAR_V=158;
+
+let wf=[
+  {id:'n1',type:'intake',    label:'Dynamic intake form',   assignee:'Vertice AI',   dur:1,approval:'auto',     slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:true, progress:100,threshold:0},
+  {id:'n2',type:'ai',        label:'AI triage & validation',assignee:'Vertice AI',   dur:1,approval:'auto',     slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:true, progress:100,threshold:0},
+  {id:'P1',parallel:true,steps:[
+    {id:'p1',type:'infosec',   label:'Security Review',      assignee:'Kevin Smith',  dur:3,approval:'human',   slack:true,escalate:true, infosec:true, soc2:true, shadow:true, done:true, progress:100,threshold:0},
+    {id:'p2',type:'legal',     label:'Legal Approval',       assignee:'Marcus Adams', dur:3,approval:'human',   slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:20, threshold:0},
+    {id:'p3',type:'procurement',label:'Commercial check',    assignee:'Proc. Lead',   dur:2,approval:'human',   slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:40, threshold:0},
+  ]},
+  {id:'n3',type:'finance',   label:'Finance approval',      assignee:'Finance team', dur:2,approval:'threshold',slack:true,escalate:true, infosec:false,soc2:false,shadow:false,done:false,progress:60, threshold:10000,
+    hiStep:{id:'h1',type:'exec',  label:'CFO sign-off', assignee:'CFO',        dur:1,approval:'human',slack:true,escalate:true, infosec:false,soc2:false,shadow:false,done:false,progress:0,threshold:0},
+    loStep:{id:'l1',type:'notify',label:'Auto-approved',assignee:'Vertice AI', dur:1,approval:'auto', slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:0,threshold:0},
+  },
+  {id:'n4',type:'negotiate', label:'Vendor negotiation',    assignee:'Vertice AI',   dur:5,approval:'auto',     slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:0, threshold:0},
+  {id:'n5',type:'approve',   label:'Final approval',        assignee:'CFO',          dur:1,approval:'human',    slack:true,escalate:true, infosec:false,soc2:false,shadow:false,done:false,progress:0, threshold:0},
+  {id:'n6',type:'po',        label:'PO creation',           assignee:'Vertice AI',   dur:1,approval:'auto',     slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:0, threshold:0},
+];
+
+let sel=null,dragTypeId=null;
+let px=60,py=60,scale=1,isPanning=false,didPan=false,sx=0,sy=0;
+const cwrap=document.getElementById('cwrap'),cinner=document.getElementById('cinner');
+
+function applyT(){cinner.style.transform=`translate(${px}px,${py}px) scale(${scale})`;document.getElementById('zval').textContent=Math.round(scale*100)+'%';}
+cwrap.addEventListener('mousedown',e=>{if(e.target.closest('.node,.sbi,.add-btn,.ndel,.nbtn,.ix,.tog,.iin,.isel,.tin'))return;isPanning=true;didPan=false;sx=e.clientX-px;sy=e.clientY-py;cwrap.classList.add('panning');e.preventDefault();});
+window.addEventListener('mousemove',e=>{if(!isPanning)return;px=e.clientX-sx;py=e.clientY-sy;if(Math.abs(e.movementX)+Math.abs(e.movementY)>2)didPan=true;applyT();});
+window.addEventListener('mouseup',()=>{isPanning=false;cwrap.classList.remove('panning');});
+cwrap.addEventListener('wheel',e=>{e.preventDefault();const d=-e.deltaY*.001,r=cwrap.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,ps=scale;scale=Math.min(2,Math.max(.25,scale+d));px=mx-(mx-px)*(scale/ps);py=my-(my-py)*(scale/ps);applyT();},{passive:false});
+function zoom(d){scale=Math.min(2,Math.max(.25,scale+d));applyT();}
+function fitView(){px=60;py=60;scale=1;applyT();}
+
+// ── LAYOUT ──
+function calcLayout(){
+  // Returns array of {step,cx,cy,kind}
+  // kind: 'main'|'par'|'thresh'|'hi'|'lo'
+  const items=[];
+  let cx=NW/2+20;
+
+  wf.forEach((item,wi)=>{
+    if(item.parallel){
+      const n=item.steps.length;
+      const totalH=(n-1)*PAR_V;
+      item.steps.forEach((step,si)=>{
+        items.push({step,cx,cy:MAIN_Y-totalH/2+si*PAR_V,kind:'par',parItem:item});
+      });
+      cx+=NW+COL;
+    } else if(item.approval==='threshold'){
+      // root node on main row
+      items.push({step:item,cx,cy:MAIN_Y,kind:'thresh'});
+      const bCx=cx+NW+COL;
+      // hi goes up, lo goes down
+      if(item.hiStep) items.push({step:item.hiStep,cx:bCx,cy:BRANCH_UP,kind:'hi',owner:item,ownerCx:cx});
+      if(item.loStep) items.push({step:item.loStep,cx:bCx,cy:BRANCH_DN,kind:'lo',owner:item,ownerCx:cx});
+      cx=bCx+NW+COL;
+    } else {
+      items.push({step:item,cx,cy:MAIN_Y,kind:'main'});
+      cx+=NW+COL;
+    }
+  });
+  return {items,totalW:cx+NW};
+}
+
+// ── RENDER ──
+function render(){
+  cinner.querySelectorAll('.node-wrap,.par-bracket,.add-btn').forEach(e=>e.remove());
+  const svg=document.getElementById('conn-svg');
+  svg.innerHTML='';
+  const {items,totalW}=calcLayout();
+  svg.setAttribute('width',totalW+200);
+
+  drawConns(items,svg);
+  drawParBrackets(items);
+  items.forEach(p=>placeNode(p));
+  drawAddBtns(items);
+  updateMetrics(items);
+  renderCycleBar();
+}
+
+// ── SVG CONNECTIONS ──
+const NS='http://www.w3.org/2000/svg';
+function mkPath(x1,y1,x2,y2,color,dash){
+  const p=document.createElementNS(NS,'path');
+  const mx=(x1+x2)/2;
+  p.setAttribute('d',`M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`);
+  p.setAttribute('fill','none');p.setAttribute('stroke',color);p.setAttribute('stroke-width','1.5');
+  if(dash)p.setAttribute('stroke-dasharray','6 4');
+  return p;
+}
+function mkArrow(x,y,color){
+  const a=document.createElementNS(NS,'path');
+  a.setAttribute('d',`M${x-7} ${y-4} L${x} ${y} L${x-7} ${y+4}`);
+  a.setAttribute('fill','none');a.setAttribute('stroke',color);a.setAttribute('stroke-width','1.5');
+  a.setAttribute('stroke-linecap','round');a.setAttribute('stroke-linejoin','round');
+  return a;
+}
+// pill label on a path midpoint
+function mkPillLabel(x,y,text,color,bg){
+  const g=document.createElementNS(NS,'g');
+  const PADX=7,PADY=3,TW=text.length*5.5+PADX*2,TH=16;
+  const rx=document.createElementNS(NS,'rect');
+  rx.setAttribute('x',x-TW/2);rx.setAttribute('y',y-TH/2);rx.setAttribute('width',TW);rx.setAttribute('height',TH);rx.setAttribute('rx',TH/2);rx.setAttribute('fill',bg);
+  const tx=document.createElementNS(NS,'text');
+  tx.setAttribute('x',x);tx.setAttribute('y',y+1);tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','middle');
+  tx.setAttribute('font-size','9');tx.setAttribute('font-weight','700');tx.setAttribute('fill',color);tx.setAttribute('font-family','-apple-system,Segoe UI,system-ui,sans-serif');
+  tx.textContent=text;
+  g.appendChild(rx);g.appendChild(tx);
+  return g;
+}
+
+function conn(x1,y1,x2,y2,color,dash,svg){
+  svg.appendChild(mkPath(x1,y1,x2,y2,color,dash));
+  svg.appendChild(mkArrow(x2,y2,color));
+}
+
+function drawConns(items,svg){
+  function byId(id){return items.find(i=>i.step&&i.step.id===id);}
+
+  let prev=null; // last main-row item
+
+  wf.forEach((item,wi)=>{
+    if(item.parallel){
+      const gItems=items.filter(i=>i.parItem===item);
+      // from prev to each par node
+      if(prev) gItems.forEach(gi=>conn(prev.cx+NW/2,prev.cy, gi.cx-NW/2,gi.cy,'rgba(0,0,0,.18)',false,svg));
+      // from each par to next main
+      const nextMain=wf.slice(wi+1).find(s=>!s.parallel);
+      if(nextMain){
+        const np=byId(nextMain.id);
+        if(np) gItems.forEach(gi=>conn(gi.cx+NW/2,gi.cy, np.cx-NW/2,np.cy,'rgba(0,0,0,.18)',false,svg));
+      }
+      prev=null;
+    } else if(item.approval==='threshold'){
+      const tp=byId(item.id);
+      if(prev&&tp) conn(prev.cx+NW/2,prev.cy, tp.cx-NW/2,tp.cy,'rgba(0,0,0,.18)',false,svg);
+      const hi=byId(item.hiStep&&item.hiStep.id);
+      const lo=byId(item.loStep&&item.loStep.id);
+      // hi branch — purple, goes up
+      if(tp&&hi){
+        conn(tp.cx+NW/2,tp.cy, hi.cx-NW/2,hi.cy,'#7C5CFC',false,svg);
+        // pill label at midpoint
+        const mx=(tp.cx+NW/2+hi.cx-NW/2)/2;
+        const my=(tp.cy+hi.cy)/2;
+        svg.appendChild(mkPillLabel(mx,my,'ABOVE £'+(item.threshold||10000).toLocaleString(),'#fff','#7C5CFC'));
+      }
+      // lo branch — green, goes down
+      if(tp&&lo){
+        conn(tp.cx+NW/2,tp.cy, lo.cx-NW/2,lo.cy,'#16A34A',false,svg);
+        const mx=(tp.cx+NW/2+lo.cx-NW/2)/2;
+        const my=(tp.cy+lo.cy)/2;
+        svg.appendChild(mkPillLabel(mx,my,'BELOW → AUTO','#fff','#16A34A'));
+      }
+      // both branches re-converge to next step
+      const nextMain=wf.slice(wi+1).find(s=>!s.parallel&&s.approval!=='threshold');
+      if(nextMain){
+        const np=byId(nextMain.id);
+        if(np&&hi) conn(hi.cx+NW/2,hi.cy, np.cx-NW/2,np.cy,'#7C5CFC',true,svg);
+        if(np&&lo) conn(lo.cx+NW/2,lo.cy, np.cx-NW/2,np.cy,'#16A34A',true,svg);
+      }
+      prev=null;
+    } else {
+      const p=byId(item.id);
+      if(prev&&p) conn(prev.cx+NW/2,prev.cy, p.cx-NW/2,p.cy,'rgba(0,0,0,.18)',false,svg);
+      prev=p;
+    }
+  });
+}
+
+// ── PARALLEL BRACKETS ──
+function drawParBrackets(items){
+  const groups=new Map();
+  items.filter(i=>i.kind==='par').forEach(i=>{
+    if(!groups.has(i.parItem))groups.set(i.parItem,[]);
+    groups.get(i.parItem).push(i);
+  });
+  groups.forEach((ps)=>{
+    if(!ps.length)return;
+    const minY=Math.min(...ps.map(p=>p.cy))-NH/2-10;
+    const maxY=Math.max(...ps.map(p=>p.cy))+NH/2+10;
+    const x=ps[0].cx-NW/2-10;
+    const w=NW+20;
+    const br=document.createElement('div');br.className='par-bracket';
+    br.style.cssText=`left:${x}px;top:${minY}px;width:${w}px;height:${maxY-minY}px`;
+    const lbl=document.createElement('div');lbl.className='par-lbl';lbl.textContent='Parallel review — approval orchestration';
+    br.appendChild(lbl);cinner.appendChild(br);
+  });
+}
+
+// ── PLACE NODE ──
+function placeNode(p){
+  const step=p.step;if(!step||!step.type)return;
+  const t=TT(step.type);const isSel=sel&&sel.id===step.id;
+  const wrap=document.createElement('div');
+  wrap.className='node-wrap';
+  wrap.style.cssText=`left:${p.cx-NW/2}px;top:${p.cy-NH/2-22}px`;
+
+  const lbl=document.createElement('div');lbl.className='ctx-lbl';
+  if(p.kind==='hi'){lbl.textContent='Above threshold → CFO';lbl.style.color='#7C5CFC';}
+  else if(p.kind==='lo'){lbl.textContent='Below threshold → auto';lbl.style.color='#16A34A';}
+  else lbl.textContent=t.sl||'';
+  wrap.appendChild(lbl);
+
+  const node=document.createElement('div');
+  node.className='node'+(isSel?' sel':'')+(step.done?' done':'')+(step.shadow?' risky':'');
+  node.addEventListener('mousedown',e=>e.stopPropagation());
+  node.addEventListener('click',e=>{if(!didPan){e.stopPropagation();selectStep(step);}});
+
+  const badges=[];
+  if(step.approval==='threshold')badges.push(`<span class="nbadge thresh">£${(step.threshold||0).toLocaleString()} threshold</span>`);
+  if(step.infosec)badges.push('<span class="nbadge tprm">TPRM</span>');
+  if(step.soc2)badges.push('<span class="nbadge soc">SOC 2</span>');
+  if(step.shadow)badges.push('<span class="nbadge shadow">Shadow AI</span>');
+  if(t.bench)badges.push(`<span class="nbadge bench">${t.bench} saving</span>`);
+
+  node.innerHTML=`
+    <div class="ndel" onclick="event.stopPropagation();removeStep('${step.id}')">&#x2715;</div>
+    <div class="ntop">
+      <div class="nico" style="background:${step.done?'#DCFCE7':t.bg}">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="${t.icon}" stroke="${step.done?'#16A34A':t.c}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="ntitle">${step.label}</div>
+      ${step.done?`<div class="ncheck"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`:''}
+    </div>
+    <div class="nasgn">
+      <div class="nav"><svg viewBox="0 0 9 9" fill="none"><circle cx="4.5" cy="3" r="1.5" stroke="rgba(0,0,0,.25)" stroke-width="1"/><path d="M1.5 8c0-1.657 1.343-2.5 3-2.5s3 .843 3 2.5" stroke="rgba(0,0,0,.25)" stroke-width="1" stroke-linecap="round"/></svg></div>
+      <span class="naname">${step.assignee}</span>
+    </div>
+    <div class="nbar"><div class="nbarfill" style="width:${step.progress||0}%"></div></div>
+    ${badges.length?`<div class="nbadges">${badges.join('')}</div>`:''}
+    ${!step.done?`<div class="nacts"><button class="nbtn" onclick="event.stopPropagation();showToast('Task reassigned')">Reassign</button><button class="nbtn ok" onclick="event.stopPropagation();approveStep('${step.id}')">Approve</button></div>`:''}`;
+  wrap.appendChild(node);
+
+  const pill=document.createElement('div');
+  pill.className=`pill ${step.done?t.pc:'gray'}`;
+  if(step.done)pill.innerHTML=`<svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>${t.pill}`;
+  else pill.textContent=t.pill;
+  wrap.appendChild(pill);
+  cinner.appendChild(wrap);
+}
+
+// ── ADD BUTTONS ──
+function drawAddBtns(items){
+  const mainSeq=[];
+  wf.forEach(item=>{
+    if(item.parallel||item.approval==='threshold')return;
+    const p=items.find(i=>i.step&&i.step.id===item.id&&i.kind==='main');
+    if(p)mainSeq.push(p);
+  });
+  mainSeq.forEach((p,i)=>{
+    mkAddBtn(p.cx-NW/2-COL/2,p.cy,i);
+  });
+  if(mainSeq.length){
+    const last=mainSeq[mainSeq.length-1];
+    mkAddBtn(last.cx+NW/2+COL/2,last.cy,mainSeq.length);
+  }
+}
+function mkAddBtn(ax,ay,idx){
+  const btn=document.createElement('div');btn.className='add-btn';
+  btn.style.cssText=`left:${ax}px;top:${ay}px`;
+  btn.innerHTML=`<svg viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+  btn.addEventListener('mousedown',e=>e.stopPropagation());
+  btn.addEventListener('dragover',e=>{e.preventDefault();btn.classList.add('dragover');});
+  btn.addEventListener('dragleave',()=>btn.classList.remove('dragover'));
+  btn.addEventListener('drop',e=>{e.preventDefault();btn.classList.remove('dragover');if(dragTypeId){addStepAt(dragTypeId,idx);dragTypeId=null;}});
+  btn.addEventListener('click',e=>{e.stopPropagation();showQQ(idx,btn);});
+  cinner.appendChild(btn);
+}
+
+// ── QUICK ADD ──
+let qqEl=null;
+function showQQ(idx,anchor){
+  closeQQ();
+  const popup=document.createElement('div');
+  popup.style.cssText='position:absolute;background:#fff;border:.5px solid rgba(0,0,0,.14);border-radius:10px;padding:6px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:180px;max-height:380px;overflow-y:auto';
+  const r=anchor.getBoundingClientRect(),cR=cwrap.getBoundingClientRect();
+  popup.style.left=((r.left+r.width/2-cR.left-px)/scale)+'px';
+  popup.style.top=((r.bottom+6-cR.top-py)/scale)+'px';
+  popup.style.transform='translateX(-50%)';
+  PILLARS.forEach(pillar=>{
+    const ph=document.createElement('div');ph.style.cssText='font-size:9px;font-weight:600;color:#94A3B8;letter-spacing:.1em;text-transform:uppercase;padding:6px 8px 3px';ph.textContent=pillar.label;popup.appendChild(ph);
+    pillar.steps.forEach(t=>{
+      const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;transition:background .1s';
+      row.innerHTML=`<div style="width:20px;height:20px;border-radius:4px;background:${t.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="${t.icon}" stroke="${t.c}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:11.5px;color:#18152E;font-weight:500">${t.label}</span>`;
+      row.onmouseenter=()=>row.style.background='#F7F6FF';row.onmouseleave=()=>row.style.background='';
+      row.onclick=e=>{e.stopPropagation();addStepAt(t.id,idx);closeQQ();};
+      popup.appendChild(row);
+    });
+  });
+  cinner.appendChild(popup);qqEl=popup;
+  setTimeout(()=>document.addEventListener('click',closeQQ,{once:true}),0);
+}
+function closeQQ(){if(qqEl){qqEl.remove();qqEl=null;}}
+
+// ── STEP OPS ──
+function addStepAt(typeId,insertIdx){
+  const t=TT(typeId);
+  wf.splice(insertIdx,0,{id:'n'+Date.now(),type:typeId,label:t.label,assignee:'Vertice AI',dur:2,approval:'auto',slack:true,escalate:false,infosec:t.id==='infosec'||t.id==='tprm',soc2:t.id==='tprm',shadow:false,done:false,progress:0,threshold:10000});
+  render();showToast(`"${t.label}" added`);
+}
+function removeStep(id){
+  wf=wf.filter(s=>s.id!==id);
+  wf.forEach(s=>{if(s.parallel)s.steps=s.steps.filter(p=>p.id!==id);});
+  wf=wf.filter(s=>!s.parallel||s.steps.length>0);
+  if(sel&&sel.id===id)deselect();else render();showToast('Step removed');
+}
+function approveStep(id){const s=findStep(id);if(s){s.done=true;s.progress=100;}render();showToast('Step approved');}
+function findStep(id){
+  for(const s of wf){if(s.id===id)return s;if(s.parallel)for(const p of s.steps)if(p.id===id)return p;if(s.hiStep&&s.hiStep.id===id)return s.hiStep;if(s.loStep&&s.loStep.id===id)return s.loStep;}return null;
+}
+
+// ── SELECT ──
+function selectStep(step){
+  sel=step;
+  document.getElementById('ie').style.display='none';document.getElementById('ip').style.display='block';
+  document.getElementById('iht').textContent=step.label;
+  document.getElementById('in-name').value=step.label;
+  document.getElementById('in-asgn').value=step.assignee||'Vertice AI';
+  document.getElementById('in-dur').value=step.dur||2;
+  document.getElementById('in-appr').value=step.approval||'human';
+  document.getElementById('tog-sl').checked=step.slack!==false;
+  document.getElementById('tog-es').checked=!!step.escalate;
+  document.getElementById('tog-is').checked=!!step.infosec;
+  document.getElementById('tog-soc').checked=!!step.soc2;
+  document.getElementById('tog-shadow').checked=!!step.shadow;
+  document.getElementById('thresh-ui').style.display=step.approval==='threshold'?'flex':'none';
+  document.getElementById('in-thresh').value=step.threshold||10000;
+  const t=TT(step.type);
+  document.getElementById('bench-ui').style.display=t.bench?'block':'none';
+  if(t.bench)document.getElementById('bench-val').textContent=t.bench;
+  document.getElementById('risk-ui').style.display=step.shadow?'block':'none';
+  render();
+}
+function deselect(){sel=null;document.getElementById('ie').style.display='block';document.getElementById('ip').style.display='none';render();}
+function upd(field,val){
+  if(!sel)return;sel[field]=val;
+  if(field==='label')document.getElementById('iht').textContent=val;
+  if(field==='shadow')document.getElementById('risk-ui').style.display=val?'block':'none';
+  render();selectStep(sel);
+}
+function updApproval(val){
+  if(!sel)return;sel.approval=val;
+  document.getElementById('thresh-ui').style.display=val==='threshold'?'flex':'none';
+  if(val==='threshold'&&!sel.hiStep){
+    sel.hiStep={id:'h'+Date.now(),type:'exec',  label:'CFO sign-off', assignee:'CFO',       dur:1,approval:'human',slack:true,escalate:true, infosec:false,soc2:false,shadow:false,done:false,progress:0,threshold:0};
+    sel.loStep={id:'l'+Date.now(),type:'notify',label:'Auto-approved',assignee:'Vertice AI',dur:1,approval:'auto', slack:true,escalate:false,infosec:false,soc2:false,shadow:false,done:false,progress:0,threshold:0};
+  }
+  render();selectStep(sel);
+}
+
+// ── METRICS ──
+function updateMetrics(items){
+  let steps=0,par=0,days=0;
+  wf.forEach(s=>{if(s.parallel){par+=s.steps.length;steps+=s.steps.length;days+=Math.max(...s.steps.map(p=>p.dur||2));}else{steps++;days+=s.dur||1;if(s.hiStep)steps+=2;}});
+  document.getElementById('m-steps').textContent=steps;document.getElementById('m-par').textContent=par;document.getElementById('m-cycle').textContent=`~${days} days`;
+}
+function renderCycleBar(){
+  const cols=['#7C5CFC','#7C5CFC','#D97706','#D97706','#16A34A','#16A34A','#7C5CFC'];
+  const segs=wf.map((s,i)=>({d:s.parallel?Math.max(...s.steps.map(p=>p.dur||2)):s.dur||1,c:cols[Math.min(i,cols.length-1)]}));
+  const total=segs.reduce((a,s)=>a+s.d,0);
+  document.getElementById('cb-track').innerHTML=segs.map(s=>`<div class="cb-seg" style="flex:${s.d};background:${s.c}"></div>`).join('');
+  document.getElementById('cb-new').textContent=`~${total} days`;
+  document.getElementById('cb-save').textContent=Math.round((1-total/42)*100)+'% faster';
+}
+
+// ── PALETTE ──
+function buildPalette(){
+  document.getElementById('palette').innerHTML=PILLARS.map(p=>`<div class="sbpillar">${p.label}</div>${p.steps.map(t=>`<div class="sbi" draggable="true" ondragstart="dragTypeId='${t.id}'" ondragend="dragTypeId=null"><div class="sbico" style="background:${t.bg}"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="${t.icon}" stroke="${t.c}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="sbname">${t.label}</span></div>`).join('')}`).join('');
+}
+
+cwrap.addEventListener('click',e=>{if(didPan)return;if(e.target===cwrap||e.target===cinner)deselect();});
+cwrap.addEventListener('dragover',e=>e.preventDefault());
+cwrap.addEventListener('drop',e=>{e.preventDefault();if(dragTypeId){addStepAt(dragTypeId,wf.length);dragTypeId=null;}});
+function resetWF(){if(confirm('Reset workflow?'))location.reload();}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);}
+
+buildPalette();render();applyT();
+</script>
+</body>
+</html>
